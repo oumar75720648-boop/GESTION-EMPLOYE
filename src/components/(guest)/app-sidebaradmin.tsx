@@ -1,0 +1,82 @@
+"use client";
+
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  IconHome,
+  IconUsers,
+  IconClipboard,
+  IconBuilding,
+  IconBell,
+  IconSettings,
+} from "@tabler/icons-react";
+
+export default function AppSidebarAdmin() {
+  const router = useRouter();
+
+  return (
+    <aside className="w-[260px] bg-[#0a043c] text-white flex flex-col p-5 min-h-screen shadow-xl rounded-r-3xl">
+     
+      <div className="flex items-center justify-between mb-8">
+        <Image
+          src="/LOGO-SIC-FOOTER-2-640x320-2 (2).png"
+          alt="Logo"
+          width={120}
+          height={60}
+          className="rounded-lg"
+        />
+      </div>
+
+     
+      <h2 className="text-lg font-semibold mb-6 uppercase tracking-wide text-gray-300">
+        Menu
+      </h2>
+
+      <button
+        onClick={() => router.push("/guest/dashboard")}
+        className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-indigo-600 transition"
+      >
+        <IconHome size={20} /> Dashboard
+      </button>
+
+
+      <button
+        onClick={() => router.push("/guest/liste-employe")}
+        className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
+      >
+        <IconUsers size={20} /> Employés
+      </button>
+
+      <button
+        onClick={() => router.push("/guest/liste-demande")}
+        className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
+      >
+        <IconClipboard size={20} /> Demandes
+      </button>
+
+    
+      <button
+        onClick={() => router.push("/guest/departement")}
+        className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
+      >
+        <IconBuilding size={20} /> Département
+      </button>
+
+     
+      <button
+        onClick={() => router.push("/guest/notifications")}
+        className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
+      >
+        <IconBell size={20} /> Notifications
+      </button>
+
+     
+      <button
+        onClick={() => router.push("/guest/parametre")}
+        className="flex items-center gap-3 py-2 px-3 mt-auto rounded-md hover:bg-indigo-600 transition"
+      >
+        <IconSettings size={20} /> Paramètres
+      </button>
+    </aside>
+  );
+}
