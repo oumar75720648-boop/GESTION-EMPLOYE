@@ -37,7 +37,7 @@ export function Connexion({ className, ...props }: React.ComponentProps<"div">) 
       {...props}
     >
     
-      <div className="flex flex-col items-center mb-6">
+      <div className="flex flex-col items-center mb-10">
         <Image
           src="/LOGO-SIC-FOOTER-2-640x320-2 (2).png"
           alt="Logo Smart"
