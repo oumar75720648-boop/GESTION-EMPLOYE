@@ -1,8 +1,8 @@
-import Acces from "@/feature/employe/code/code";
+import { Connexion } from "@/feature/auth/views/auth-page";
 import React from "react";
 
-export default function Page() {
+export default function Page(){
     return(
-        <Acces/>
+        <Connexion/>
     )
 }
