@@ -2,10 +2,10 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { authSchema } from "@/feature/auth/validations/auth-validate";
-import { authService } from "@/feature/auth/services/login";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { authSchema } from '../validations/auth-validate';
+import { authService } from '../services/login';
 import { Routes } from '@/lib/routes';
 
 export type LoginFormData = {
@@ -27,18 +27,27 @@ export function useLoginForm() {
     },
   });
 
-  const action = async (data: LoginFormData) => {
+  const action = async () => {
     try {
       setError(null);
       setFetching(true);
+      const data = form.getValues();
 
-      const response = await authService.authenticationWithEmail(data.email, data.motDePasse);
+      console.log("Données du formulaire:", data);
+      const login = {
+        email: data.email,
+        motDePasse: data.motDePasse
+      }
+      
+      const response = await authService.authenticationWithEmail(login);
+      console.log("Données de la réponse:", response);
+      const accessToken = response.token;
 
-      const accessToken = response.accessToken;
-      if (accessToken) {
-        sessionStorage.setItem('accessToken', accessToken);
+      if(accessToken) {
+        localStorage.setItem('accessToken', accessToken);
         router.push(Routes.home.dashboard.path);
       }
+
     } catch (err: any) {
       setError(err?.response?.data?.error?.message || "E-mail ou mot de passe incorrecte");
     } finally {

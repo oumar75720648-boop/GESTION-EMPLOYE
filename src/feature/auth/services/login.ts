@@ -1,10 +1,10 @@
 import apiClients from "@/lib/api/axios";
-import { AuthRequest, Token } from "../entities/auth-entities";
+import { AfterConnect, AuthRequest } from "../entities/auth-entities";
 
-export async function authenticationWithEmail(email: string, motDePasse: string) {
-  const body: AuthRequest = { email, motDePasse };
-  const res = await apiClients.post("/auth/login", body);
-  return res.data as Token;
+export async function authenticationWithEmail(data: AuthRequest) {
+  const res = await apiClients.post("/auth/login", data);
+  console.log("Response from authenticationWithEmail:", res);
+  return res.data as AfterConnect;
 }
 
 export const authService = {
