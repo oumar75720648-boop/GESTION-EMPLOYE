@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AppSidebar } from "@/components/(protected)/app-sidebar";
-import ListeDemandes from "@/feature/employe/demande/liste";
+import ListeDemandes from "@/feature/employe/liste";
 
 export default function Page() {
   return (

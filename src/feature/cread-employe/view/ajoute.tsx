@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react"; // Icône de flèche (lucide-react est dispo avec shadcn/ui)
+import { ArrowLeft } from "lucide-react";
 
 export default function AjouterEmploye() {
   const router = useRouter();
@@ -16,36 +16,15 @@ export default function AjouterEmploye() {
   const [specialite, setSpecialite] = useState("");
   const [typeEmploye, setTypeEmploye] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = {
-      nom,
-      prenom,
-      contact,
-      email,
-      motDePasse,
-      departement,
-      specialite,
-      typeEmploye,
-    };
-
-    console.log("Employé ajouté :", formData);
     alert("Employé ajouté avec succès !");
-
-  
-    setNom("");
-    setPrenom("");
-    setContact("");
-    setEmail("");
-    setMotDePasse("");
-    setDepartement("");
-    setSpecialite("");
-    setTypeEmploye("");
+    
   };
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow relative">
-      {/* Bouton retour */}
+      
       <button
         onClick={() => router.push("/guest/liste-employe")}
         className="flex items-center gap-2 text-[#0a043c] hover:text-blue-800 absolute top-4 left-4"
@@ -65,8 +44,7 @@ export default function AjouterEmploye() {
           <label className="block mb-1 font-medium">Nom</label>
           <input
             type="text"
-            value={nom}
-            onChange={(e) => setNom(e.target.value)}
+            name="nom"
             pattern="[A-Za-zÀ-ÿ\s]+"
             title="Le nom doit contenir uniquement des lettres"
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -78,8 +56,7 @@ export default function AjouterEmploye() {
           <label className="block mb-1 font-medium">Prénom</label>
           <input
             type="text"
-            value={prenom}
-            onChange={(e) => setPrenom(e.target.value)}
+            name="prenom"
             pattern="[A-Za-zÀ-ÿ\s]+"
             title="Le prénom doit contenir uniquement des lettres"
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -91,8 +68,7 @@ export default function AjouterEmploye() {
           <label className="block mb-1 font-medium">Contact</label>
           <input
             type="text"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
+            name="contact"
             pattern="\d+"
             title="Le contact doit contenir uniquement des chiffres"
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -104,8 +80,7 @@ export default function AjouterEmploye() {
           <label className="block mb-1 font-medium">Email</label>
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           />
@@ -115,8 +90,7 @@ export default function AjouterEmploye() {
           <label className="block mb-1 font-medium">Mot de passe</label>
           <input
             type="password"
-            value={motDePasse}
-            onChange={(e) => setMotDePasse(e.target.value)}
+            name="motDePasse"
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           />
@@ -125,8 +99,7 @@ export default function AjouterEmploye() {
         <div>
           <label className="block mb-1 font-medium">Département</label>
           <select
-            value={departement}
-            onChange={(e) => setDepartement(e.target.value)}
+            name="departement"
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           >
@@ -141,8 +114,7 @@ export default function AjouterEmploye() {
         <div>
           <label className="block mb-1 font-medium">Spécialité</label>
           <select
-            value={specialite}
-            onChange={(e) => setSpecialite(e.target.value)}
+            name="specialite"
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           >
@@ -154,10 +126,9 @@ export default function AjouterEmploye() {
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Type d'employé</label>
+          <label className="block mb-1 font-medium">Type Utilisateur</label>
           <select
-            value={typeEmploye}
-            onChange={(e) => setTypeEmploye(e.target.value)}
+            name="typeEmploye"
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           >

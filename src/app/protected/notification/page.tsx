@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AppSidebar } from "@/components/(protected)/app-sidebar";
-import NotificationEmp from "@/feature/employe/demande/notification";
+import NotificationEmp from "@/feature/employe/notification";
 
 export default function Page() {
   return (

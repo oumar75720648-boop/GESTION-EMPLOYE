@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export type authDto = z.Infer<typeof authSchema>;
-
 export const authSchema = z.object({
-    email: z.string().min(1, { message: "Email is required" }),
-    password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+  email: z.string().min(1, { message: "Email is required" }),
+  motDePasse: z.string().min(6, { message: "Password must be at least 6 characters long" }),
 });
+
+export type AuthDto = z.infer<typeof authSchema>;

@@ -1,46 +1,50 @@
-import { useState } from "react";
-import { authDto, authSchema } from "../validations/auth-validate";
-import { useForm } from "react-hook-form";
-import { auth } from "../services/login";
-import { ZodObject, ZodString } from "zod";
-import { $strip } from "zod/v4/core";
-export function useAuthHook() {
-    const [isFetching, setIsFetching] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+'use client';
 
-    const forms = useForm<authDto>({
-        resolver: zodResolver(authSchema),
-        defaultValues: {
-            email: '',
-            password: ''
-        }
-    });
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { authSchema } from "@/feature/auth/validations/auth-validate";
+import { authService } from "@/feature/auth/services/login";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Routes } from '@/lib/routes';
 
-    const resetStates = async() => {
-        setIsFetching(false);
-        setError(null);
-        setError(null);
-
-        try {
-           const data  = forms.getValues();
-           console.log("Current form values:", data);
-
-           // appelle du service
-           await auth.AuthService(data);
-        } catch (error) {
-            console.error("Error resetting form:", error);
-        }
-    }
-
-
-    return {
-        ...forms,
-        isFetching, 
-        error,
-        resetStates
+export type LoginFormData = {
+  email: string;
+  motDePasse: string;
 };
-}
 
-function zodResolver(authSchema: ZodObject<{ email: ZodString; password: ZodString; }, $strip>): import("react-hook-form").Resolver<{ email: string; password: string; }, any, { email: string; password: string; }> | undefined {
-    throw new Error("Function not implemented.");
+export function useLoginForm() {
+  const [error, setError] = useState<string | null>(null);
+  const [fetching, setFetching] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(authSchema),
+    defaultValues: {
+      email: '',
+      motDePasse: '',
+    },
+  });
+
+  const action = async (data: LoginFormData) => {
+    try {
+      setError(null);
+      setFetching(true);
+
+      const response = await authService.authenticationWithEmail(data.email, data.motDePasse);
+
+      const accessToken = response.accessToken;
+      if (accessToken) {
+        sessionStorage.setItem('accessToken', accessToken);
+        router.push(Routes.home.dashboard.path);
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.error?.message || "E-mail ou mot de passe incorrecte");
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  return { ...form, action, error, pending: fetching };
 }

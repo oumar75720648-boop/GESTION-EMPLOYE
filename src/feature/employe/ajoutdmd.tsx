@@ -8,15 +8,8 @@ export function NouvelleDemande() {
   const [departement, setDepartement] = useState("");
   const [priorite, setPriorite] = useState("");
   const [details, setDetails] = useState("");
-  const [demandes, setDemandes] = useState<any[]>([]);
 
-  // Charger les demandes existantes
-  useEffect(() => {
-    const stored = localStorage.getItem("demandes");
-    if (stored) setDemandes(JSON.parse(stored));
-  }, []);
-
-  // Soumission du formulaire
+ 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!type || !date || !departement || !priorite) {
@@ -33,18 +26,7 @@ export function NouvelleDemande() {
       details,
     };
 
-    const updatedDemandes = [nouvelleDemande, ...demandes];
-    setDemandes(updatedDemandes);
-    localStorage.setItem("demandes", JSON.stringify(updatedDemandes));
-
-    // Réinitialiser les champs
-    setType("");
-    setDate("");
-    setDepartement("");
-    setPriorite("");
-    setDetails("");
-    alert("Demande enregistrée !");
-  };
+  }
 
   return (
     <div className="flex flex-col items-center mt-8">

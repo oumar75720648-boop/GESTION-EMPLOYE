@@ -1,4 +1,4 @@
-import AjouteEmployes from "@/feature/admin/ajouteemploye/ajoute";
+import AjouteEmployes from "@/feature/cread-employe/view/ajoute";
 export default function Page() {
   return <AjouteEmployes />;
 }
