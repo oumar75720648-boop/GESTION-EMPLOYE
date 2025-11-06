@@ -12,5 +12,5 @@ export const Routes = {
       title: "Tableau de bord",
       path: "/guest/dashboard", 
     },
-  },
+  }
 };
