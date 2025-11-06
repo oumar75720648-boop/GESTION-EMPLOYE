@@ -10,7 +10,7 @@ export const Routes = {
   home: {
     dashboard: {
       title: "Tableau de bord",
-      path: "/dashboard", 
+      path: "/0dashboard", 
     },
-  }
+  },
 };
