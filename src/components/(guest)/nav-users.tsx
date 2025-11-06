@@ -19,7 +19,7 @@ export function NavUser({ user }: UserProps) {
   const router = useRouter();
 
   const goToProfile = () => router.push("/employe/compte");
-  const logout = () => router.push("/employe/connexion");
+  const logout = () => router.push("/");
 
   return (
     <DropdownMenu>

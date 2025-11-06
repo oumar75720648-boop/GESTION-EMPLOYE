@@ -32,7 +32,7 @@ export default function ListeEmployes() {
         </h2>
 
         <Button
-          onClick={() => router.push("/guest/ajoute-employe")}
+          onClick={() => router.push("/ajoute-employe")}
           className="bg-[#160b7c] hover:bg-[#0f0660] text-white px-4 py-2 rounded-lg shadow"
         >
           + Ajouter un employé

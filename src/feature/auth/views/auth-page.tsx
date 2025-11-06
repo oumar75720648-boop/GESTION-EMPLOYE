@@ -66,27 +66,31 @@ export function Connexion() {
                 )}
               </Field>
 
-              <Field className="relative">
-                <FieldLabel htmlFor="motDePasse">Mot de passe</FieldLabel>
+                        <Field className="relative w-full">
+            <FieldLabel htmlFor="motDePasse">Mot de passe</FieldLabel>
 
-                <Input
-                  id="motDePasse"
-                  type={visible ? "text" : "password"}
-                  placeholder="Mot de passe"
-                  {...register("motDePasse")}
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setVisible(!visible)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
-                >
-                  {visible ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-                {errors.motDePasse && (
-                  <p className="text-red-500 text-sm mt-1">{errors.motDePasse.message}</p>
-                )}
-              </Field>
+            <div className="relative w-full">
+              <Input
+                id="motDePasse"
+                type={visible ? "text" : "password"}
+                placeholder="Mot de passe"
+                {...register("motDePasse")}
+                className="pr-10 w-full"
+              />
+              <button
+                type="button"
+                onClick={() => setVisible(!visible)}
+                className="absolute inset-y-0 right-2 flex items-center p-1 bg-transparent text-gray-500"
+              >
+                {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+
+            {errors.motDePasse && (
+              <p className="text-red-500 text-sm mt-1">{errors.motDePasse.message}</p>
+            )}
+          </Field>
+
 
               <Field className="flex flex-col gap-3 pt-3">
                 <Button 

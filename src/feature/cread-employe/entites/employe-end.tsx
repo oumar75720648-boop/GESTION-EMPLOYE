@@ -6,11 +6,5 @@ export interface CreadEmploye {
     email: string;
     motDePasse: string;
     typeUtilisateurId: string;
-    de
 
-}
-
-export interface Root {
-  email: string
-  motDePasse: string
 }
