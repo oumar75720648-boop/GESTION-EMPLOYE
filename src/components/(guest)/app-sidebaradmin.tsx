@@ -33,7 +33,7 @@ export default function AppSidebarAdmin() {
       </h2>
 
       <button
-        onClick={() => router.push("/guest/dashboard")}
+        onClick={() => router.push("/dashboard")}
         className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconHome size={20} /> Dashboard
@@ -41,14 +41,14 @@ export default function AppSidebarAdmin() {
 
 
       <button
-        onClick={() => router.push("/guest/liste-employe")}
+        onClick={() => router.push("/liste-employe")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconUsers size={20} /> Employés
       </button>
 
       <button
-        onClick={() => router.push("/guest/liste-demande")}
+        onClick={() => router.push("/liste-demande")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconClipboard size={20} /> Demandes
@@ -56,7 +56,7 @@ export default function AppSidebarAdmin() {
 
     
       <button
-        onClick={() => router.push("/guest/departement")}
+        onClick={() => router.push("/departement")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconBuilding size={20} /> Département
@@ -64,7 +64,7 @@ export default function AppSidebarAdmin() {
 
      
       <button
-        onClick={() => router.push("/guest/notifications")}
+        onClick={() => router.push("/notifications")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconBell size={20} /> Notifications
@@ -72,7 +72,7 @@ export default function AppSidebarAdmin() {
 
      
       <button
-        onClick={() => router.push("/guest/parametre")}
+        onClick={() => router.push("/parametre")}
         className="flex items-center gap-3 py-2 px-3 mt-auto rounded-md hover:bg-indigo-600 transition"
       >
         <IconSettings size={20} /> Paramètres
