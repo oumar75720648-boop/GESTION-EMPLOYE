@@ -1,33 +1,16 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+"use client";
+import AppSidebarAdmin from "@/components/dashboard/app-sidebaradmin";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Gestion des EMployes",
-  description: "Premier aplli",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body
-      >
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar toujours visible */}
+      <AppSidebarAdmin />
+
+      {/* Contenu principal */}
+      <main className="flex-1 bg-white rounded-tl-3xl shadow-inner p-6 m-4">
         {children}
-      </body>
-    </html>
+      </main>
+    </div>
   );
 }

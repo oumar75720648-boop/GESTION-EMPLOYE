@@ -1,15 +1,15 @@
 "use client";
 
 import React from "react";
-import { AppSidebar } from "@/components/(protected)/app-sidebar";
 import ListeDemandes from "@/feature/employe/liste";
 import FormulaireDemande from "@/feature/employe/formulaire";
+import AppSidebarAdmin from "@/components/dashboard/app-sidebaradmin";
 
 export default function Page() {
   return (
     <div className="flex min-h-screen bg-white">
      
-      <AppSidebar />
+      <AppSidebarAdmin />
 
  
       <main className="flex-1 p-6 flex flex-col items-center">

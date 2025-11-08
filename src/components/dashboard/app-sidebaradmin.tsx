@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   IconHome,
   IconUsers,
@@ -13,10 +13,10 @@ import {
 
 export default function AppSidebarAdmin() {
   const router = useRouter();
+  const pathname = usePathname(); // récupère l'URL actuelle
 
   return (
     <aside className="w-[260px] bg-[#0a043c] text-white flex flex-col p-5 min-h-screen shadow-xl rounded-r-3xl">
-     
       <div className="flex items-center justify-between mb-8">
         <Image
           src="/LOGO-SIC-FOOTER-2-640x320-2 (2).png"
@@ -27,19 +27,21 @@ export default function AppSidebarAdmin() {
         />
       </div>
 
-     
       <h2 className="text-lg font-semibold mb-6 uppercase tracking-wide text-gray-300">
         Menu
       </h2>
 
+      {/* Dashboard - sélectionné automatiquement si on est sur / */}
       <button
-        onClick={() => router.push("/dashboard")}
-        className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-indigo-600 transition"
+        onClick={() => router.push("/")}
+        className={`flex items-center gap-3 py-2 px-3 rounded-md transition ${
+          pathname === "/" ? "bg-indigo-600" : "hover:bg-indigo-600"
+        }`}
       >
         <IconHome size={20} /> Dashboard
       </button>
 
-
+      {/* Autres boutons - style normal */}
       <button
         onClick={() => router.push("/liste-employe")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
@@ -54,7 +56,6 @@ export default function AppSidebarAdmin() {
         <IconClipboard size={20} /> Demandes
       </button>
 
-    
       <button
         onClick={() => router.push("/departement")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
@@ -62,7 +63,6 @@ export default function AppSidebarAdmin() {
         <IconBuilding size={20} /> Département
       </button>
 
-     
       <button
         onClick={() => router.push("/notifications")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
@@ -70,7 +70,6 @@ export default function AppSidebarAdmin() {
         <IconBell size={20} /> Notifications
       </button>
 
-     
       <button
         onClick={() => router.push("/parametre")}
         className="flex items-center gap-3 py-2 px-3 mt-auto rounded-md hover:bg-indigo-600 transition"

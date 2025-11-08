@@ -10,9 +10,6 @@ import { Routes } from '@/lib/routes';
 import { useAuthStore } from "../store/auth";
 
 export type LoginFormData = {
-  nom: string;
-  prenom: string;
-  contact: string;
   email: string;
   motDePasse: string;
 };
@@ -22,14 +19,11 @@ export function useLoginForm() {
   const [fetching, setFetching] = useState<boolean>(false);
 
   const router = useRouter();
-  const { login } = useAuthStore();
+   const {  } = useAuthStore();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(authSchema as any),
     defaultValues: {
-      nom :'',
-      prenom: '',
-      contact:'',
       email: '',
       motDePasse: '',
     },
@@ -42,20 +36,16 @@ export function useLoginForm() {
       const data = form.getValues();
 
       console.log("Données du formulaire:", data);
-      const useData = { 
-        nom: data.nom,
-        prenom: data.prenom,
-        contact: data.contact ,
+      const login = { 
         email: data.email,
         motDePasse: data.motDePasse
       }
       
-      const response = await authService.authenticationWithEmail(useData);
+      const response = await authService.authenticationWithEmail(login);
       console.log("Données de la réponse:", response);
       const accessToken = response.token;
 
       if(accessToken) { 
-        login(accessToken, useData);
         localStorage.setItem('accessToken', accessToken);
         router.push(Routes.home.dashboard.path);
       }

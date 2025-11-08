@@ -4,13 +4,13 @@ export const Routes = {
   auth: {
     login: {
       title: "Connexion",
-      path: "/app/guest/auth-page",
+      path: "/app/guest/auth",
     },
   },
   home: {
     dashboard: {
       title: "Tableau de bord",
-      path: "/dashboard", 
+      path: "/", 
     },
   },
 };

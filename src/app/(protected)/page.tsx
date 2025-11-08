@@ -1,5 +1,6 @@
-"use client" ;
+import DashboardPage from "@/feature/admin/dashboard/dashboard";
 
-export default function Page (){
-    return (<HomePage/>)
+export default function Page(){
+
+    return(<DashboardPage/>)
 }

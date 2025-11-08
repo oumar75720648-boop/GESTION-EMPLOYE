@@ -1,6 +1,5 @@
 "use client";
 
-import { NavUser } from "@/components/dashboard/nav-users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IconLock, IconUser } from "@tabler/icons-react";
@@ -8,7 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Parametre() {
+export default function Password() {
   const [actuelPassword, setActuelPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,52 +19,13 @@ export default function Parametre() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      setMessage("Les mots de passe ne correspondent pas !");
-      return;
-    }
-    setMessage("Mot de passe changé avec succès !");
-    setActuelPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-  };
+   
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 p-6">
-     
-      <header className="flex items-center justify-between mb-10">
-        <h1 className="text-3xl font-bold text-[#160b7c]">Paramètres</h1>
-        <NavUser
-          user={{
-            name: "TRAORE OUMAR",
-            email: "admin@mail.com",
-            avatar: undefined,
-          }}
-        />
-      </header>
-
-
-      <main className="flex flex-col items-center flex-1 w-full space-y-8">
-    
-        <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border-l-4 border-[#160b7c] flex flex-col gap-4">
-          <div className="flex items-center gap-4">
-            <IconUser size={28} className="text-[#160b7c]" />
-            <div>
-              <p className="font-semibold text-black">TRAORE OUMAR</p>
-              <p className="text-gray-500 text-sm">admin@mail.com</p>
-            </div>
-          </div>
-
-          <Button
-            className="bg-[#160b7c] hover:bg-[#0f0a66] text-white w-full transition"
-            onClick={() => router.push("/employe/compte")}
-          >
-            Modifier le profil
-          </Button>
-        </div>
-
-       
-        <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border-l-4 border-[#160b7c]">
+     <main className="flex flex-col items-center flex-1 w-full space-y-8">
+       <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border-l-4 border-[#160b7c]">
           <div className="flex justify-center mb-6">
             <div className="bg-[#160b7c] rounded-full p-4">
               <IconLock size={32} className="text-white" />

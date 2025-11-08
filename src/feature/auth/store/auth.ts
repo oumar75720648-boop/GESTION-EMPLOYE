@@ -1,23 +1,23 @@
 import { create } from "zustand";
 import { AuthRequest } from "../entities/auth-entities";
 
-type AuthState = {
+type State = {
   authUser: AuthRequest | null;
-  accessToken: string | null;
   isLoggedIn: boolean;
-  login: (token: string, user: AuthRequest) => void;
+  setToken: (accessToken: string) => void;
+  setAuthUser: (user?: AuthRequest | null) => void;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<State>((set) => ({
   authUser: null,
-  accessToken: null,
   isLoggedIn: false,
-
-  login: (token: string, user: AuthRequest) => {
+  setToken: (accessToken: string) => {
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("accessToken", token);
-      sessionStorage.setItem("authUser", JSON.stringify(user));
+      sessionStorage.setItem("accessToken", accessToken);
     }
-    set({ accessToken: token, authUser: user, isLoggedIn: true });
+    set({ isLoggedIn: true });
+  },
+  setAuthUser: (user?: AuthRequest | null) => {
+    set({ authUser: user, isLoggedIn: !!user });
   },
 }));

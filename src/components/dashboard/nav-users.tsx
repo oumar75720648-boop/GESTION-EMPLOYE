@@ -18,7 +18,7 @@ type UserProps = {
 export function NavUser({ user }: UserProps) {
   const router = useRouter();
 
-  const goToProfile = () => router.push("/employe/compte");
+  const goToProfile = () => router.push("/(protected)/admin/compte");
   const logout = () => router.push("/");
 
   return (

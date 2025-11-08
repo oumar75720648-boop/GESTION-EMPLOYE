@@ -1,23 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
-import { AppSidebar } from "@/components/(protected)/app-sidebar";
 import PageHeader from "@/feature/employe/header";
+import AppSidebarAdmin from "@/components/dashboard/app-sidebaradmin";
 
 export default function ListeDemandes() {
   const [search, setSearch] = useState("");
 
   return (
     <div className="flex h-screen bg-white w-screen">
-      {/* Sidebar */}
-      <AppSidebar />
+     
+      <AppSidebarAdmin />
 
-      {/* Contenu principal */}
+    
       <div className="flex-1 ml-0 md:ml-64 flex flex-col w-screen">
         <PageHeader />
 
         <main className="flex-1 p-6 overflow-y-auto">
-          {/* En-tête : Titre + Recherche */}
+         
           <div className="flex items-center justify-between mb-6 -ml-6">
             <h2 className="text-2xl font-bold text-[#160b7c]">
               Historique des Demandes

@@ -1,7 +1,7 @@
 "use client";
 
 import { IconUsers, IconClipboard, IconBuilding } from "@tabler/icons-react";
-import { NavUser } from "@/components/(guest)/nav-users";
+import { NavUser } from "@/components/dashboard/nav-users";
 
 export default function DashboardPage() {
   const nombreEmployes = 0;
