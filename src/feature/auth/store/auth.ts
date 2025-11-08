@@ -9,7 +9,7 @@ type State = {
   logout: (redirectTo?: string) => void;
 };
 
-export const useAuthStore = create<State>((set) => ({
+export const useAuthStore = create<State>((set:any) => ({
   authUser: null,
   isLoggedIn: typeof window !== "undefined" 
     ? !!sessionStorage.getItem("accessToken")
