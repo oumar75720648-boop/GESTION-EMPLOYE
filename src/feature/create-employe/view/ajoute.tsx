@@ -11,7 +11,7 @@ export default function AjouterEmploye() {
   const {
     register,
     handleSubmit,
-    handleSubmitForm,
+    action,
     pending,
     formState: { errors },
   } = useLoginForm();
@@ -30,16 +30,11 @@ export default function AjouterEmploye() {
         <span className="font-medium">Retour</span>
       </button>
 
-      {/* Titre */}
       <h1 className="text-2xl font-bold mb-8 text-center text-[#0a043c]">
         Créer un Employé
       </h1>
 
-      {/* Formulaire */}
-      <form
-        className="space-y-4"
-        onSubmit={handleSubmit(handleSubmitForm, onError)}
-      >
+      <form className="space-y-4" onSubmit={handleSubmit(action, onError)}>
         {/* Nom */}
         <div>
           <label className="block mb-1 font-medium">Nom</label>
@@ -48,10 +43,9 @@ export default function AjouterEmploye() {
             type="text"
             placeholder="Nom"
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           />
-          {errors.nom && (
-            <p className="text-red-500 text-sm">{errors.nom.message}</p>
-          )}
+          {errors.nom && <p className="text-red-500 text-sm">{errors.nom.message}</p>}
         </div>
 
         {/* Prénom */}
@@ -62,10 +56,9 @@ export default function AjouterEmploye() {
             type="text"
             placeholder="Prénom"
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           />
-          {errors.prenom && (
-            <p className="text-red-500 text-sm">{errors.prenom.message}</p>
-          )}
+          {errors.prenom && <p className="text-red-500 text-sm">{errors.prenom.message}</p>}
         </div>
 
         {/* Contact */}
@@ -76,10 +69,9 @@ export default function AjouterEmploye() {
             type="text"
             placeholder="Téléphone"
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           />
-          {errors.contact && (
-            <p className="text-red-500 text-sm">{errors.contact.message}</p>
-          )}
+          {errors.contact && <p className="text-red-500 text-sm">{errors.contact.message}</p>}
         </div>
 
         {/* Email */}
@@ -90,10 +82,9 @@ export default function AjouterEmploye() {
             type="email"
             placeholder="Email"
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
-          )}
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
         </div>
 
         {/* Mot de passe */}
@@ -104,10 +95,9 @@ export default function AjouterEmploye() {
             type="password"
             placeholder="Mot de passe"
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           />
-          {errors.motDePasse && (
-            <p className="text-red-500 text-sm">{errors.motDePasse.message}</p>
-          )}
+          {errors.motDePasse && <p className="text-red-500 text-sm">{errors.motDePasse.message}</p>}
         </div>
 
         {/* Département */}
@@ -123,6 +113,7 @@ export default function AjouterEmploye() {
             <option value="Compta">Comptabilité</option>
             <option value="Marketing">Marketing</option>
           </select>
+          {errors.departementId && <p className="text-red-500 text-sm">{errors.departementId.message}</p>}
         </div>
 
         {/* Spécialité */}
@@ -137,11 +128,12 @@ export default function AjouterEmploye() {
             <option value="Marketing">Marketing</option>
             <option value="Support">Support</option>
           </select>
+          {errors.specialiteId && <p className="text-red-500 text-sm">{errors.specialiteId.message}</p>}
         </div>
 
         {/* Type Utilisateur */}
         <div>
-          <label className="block mb-1 font-medium">Type Utilisateur</label>
+          <label className="block mb-1 font-medium" >Type Utilisateur</label>
           <select
             {...register("typeUtilisateurId")}
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -151,9 +143,9 @@ export default function AjouterEmploye() {
             <option value="Employe">Employé</option>
             <option value="Secretaire">Secrétaire</option>
           </select>
+          {errors.typeUtilisateurId && <p className="text-red-500 text-sm">{errors.typeUtilisateurId.message}</p>}
         </div>
 
-        {/* Bouton Submit */}
         <Button
           type="submit"
           className="w-full bg-[#0a043c] text-white font-bold py-2 px-4 rounded hover:bg-blue-900 transition"

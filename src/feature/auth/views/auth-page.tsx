@@ -7,9 +7,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useLoginForm } from "../hooks/use-auth";
-import { useEffect, useState } from "react";
-import { Routes } from "@/lib/routes";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function Connexion() {
   const [visible, setVisible] = useState<boolean>(false);
@@ -26,13 +24,6 @@ export function Connexion() {
   const Error = (err:any) => {
     console.log("Erreur de connexion",err);
   }
-
-  const router = useRouter();
-  useEffect(() => {
-    if (sessionStorage.accessToken) {
-      router.push(Routes.home.dashboard.path);
-    }
-  }, [router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">

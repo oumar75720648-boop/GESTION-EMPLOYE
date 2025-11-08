@@ -1,26 +1,30 @@
+// use-employe.ts
 'use client';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { authSchema } from '../validate/validate-employe';
+import { employeService } from '../service/create';
+import { useRouter } from 'next/navigation';
 
-export type LoginFormData = {
+export type EmployeFormData = {
   nom: string;
   prenom: string;
   contact: string;
   email: string;
   motDePasse: string;
-  typeUtilisateurId?: string;
-  departementId?: string;
-  specialiteId?: string;
+  departementId: string;
+  specialiteId: string;
+  typeUtilisateurId: string;
 };
 
 export function useLoginForm() {
   const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState<boolean>(false);
+  const [fetching, setFetching] = useState<boolean>(false);
+  const router = useRouter();
 
-  const form = useForm<LoginFormData>({
+  const form = useForm<EmployeFormData>({
     resolver: zodResolver(authSchema as any),
     defaultValues: {
       nom: '',
@@ -28,32 +32,34 @@ export function useLoginForm() {
       contact: '',
       email: '',
       motDePasse: '',
-      typeUtilisateurId: '',
       departementId: '',
       specialiteId: '',
+      typeUtilisateurId: '',
     },
   });
 
-  const handleSubmitForm = (data: LoginFormData) => {
-    setPending(true);
+  const action = async (data: EmployeFormData) => {
     try {
       setError(null);
+      setFetching(true);
 
       console.log("Données du formulaire :", data);
+      await employeService.createEmploye(data);
 
-      // Ici tu peux juste afficher les données ou les sauvegarder dans le store/session
-      alert("Formulaire soumis avec succès !");
+      
+      router.push('/liste-employe');
     } catch (err: any) {
-      setError(err?.message || "Une erreur est survenue");
+      setError(err?.response?.data?.error?.message || "Erreur lors de la création de l'employé");
+      console.error("Erreur création employé :", err);
     } finally {
-      setPending(false);
+      setFetching(false);
     }
   };
 
   return {
     ...form,
-    handleSubmitForm,
+    action,
     error,
-    pending,
+    pending: fetching,
   };
 }
