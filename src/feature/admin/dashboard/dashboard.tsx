@@ -2,11 +2,28 @@
 
 import { IconUsers, IconClipboard, IconBuilding } from "@tabler/icons-react";
 import { NavUser } from "@/components/dashboard/nav-users";
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 export default function DashboardPage() {
   const nombreEmployes = 0;
   const demandesEnAttente = 0;
   const nombreDepartements = 0;
+
+  /**
+   * @Message Vérification de l'authentification de l'utilisateur
+   * @description Cette fonction utilise useEffect pour vérifier si un jeton d'accès est présent dans le stockage local.
+   * Si le jeton n'est pas trouvé, l'utilisateur est redirigé vers la page de connexion.
+   * Ceci garantit que seules les utilisateurs authentifiés peuvent accéder au tableau de bord.
+   * @author KONE HADOU
+   * @date 08-11-2025 19:53
+   */
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      return redirect('/auth');
+    }
+  }, []);
 
   const adminUser = {
     name: "TRAORE OUMAR",

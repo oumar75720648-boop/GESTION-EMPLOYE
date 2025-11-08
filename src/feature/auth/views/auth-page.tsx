@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useLoginForm } from "../hooks/use-auth";
 import { useState } from "react";
+import { redirect } from "next/navigation";
 
 export function Connexion() {
   const [visible, setVisible] = useState<boolean>(false);
@@ -20,6 +21,9 @@ export function Connexion() {
     action
   } = useLoginForm();
 
+  if(typeof window === 'undefined' && sessionStorage.getItem('accessToken')){
+   return redirect('/');
+  }
 
   const Error = (err:any) => {
     console.log("Erreur de connexion",err);
@@ -49,7 +53,9 @@ export function Connexion() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4" onSubmit={handleSubmit(action,Error)}>
+          <form 
+            className="space-y-4" 
+            onSubmit={handleSubmit(action,Error)}>
 
             <FieldGroup>
 

@@ -35,14 +35,12 @@ export function useLoginForm() {
       setFetching(true);
       const data = form.getValues();
 
-      console.log("Données du formulaire:", data);
       const login = { 
         email: data.email,
         motDePasse: data.motDePasse
       }
       
       const response = await authService.authenticationWithEmail(login);
-      console.log("Données de la réponse:", response);
       const accessToken = response.token;
 
       if(accessToken) { 
