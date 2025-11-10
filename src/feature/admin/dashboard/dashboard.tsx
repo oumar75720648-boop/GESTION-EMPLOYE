@@ -4,6 +4,8 @@ import { IconUsers, IconClipboard, IconBuilding } from "@tabler/icons-react";
 import { NavUser } from "@/components/dashboard/nav-users";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
+import { getUserInFo } from "@/feature/auth/services/login";
+import { useQuery } from '@tanstack/react-query';
 
 export default function DashboardPage() {
   const nombreEmployes = 0;
@@ -24,6 +26,13 @@ export default function DashboardPage() {
       return redirect('/auth');
     }
   }, []);
+
+  const { data : userMe = {} as any } = useQuery({
+    queryKey:["userMe"],
+    queryFn: () =>  getUserInFo()
+  });
+
+  console.log(userMe)  
 
   const adminUser = {
     name: "TRAORE OUMAR",

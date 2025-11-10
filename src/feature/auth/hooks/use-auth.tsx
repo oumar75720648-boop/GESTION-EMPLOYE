@@ -39,10 +39,12 @@ export function useLoginForm() {
         email: data.email,
         motDePasse: data.motDePasse
       }
-      
+
       const response = await authService.authenticationWithEmail(login);
       const accessToken = response.token;
-
+      
+      console.log("Utilisateur :", response.user);
+      
       if(accessToken) { 
         localStorage.setItem('accessToken', accessToken);
         router.push(Routes.home.dashboard.path);

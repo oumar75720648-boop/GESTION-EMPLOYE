@@ -21,9 +21,10 @@ export function Connexion() {
     action
   } = useLoginForm();
 
-  if(typeof window === 'undefined' && sessionStorage.getItem('accessToken')){
-   return redirect('/');
-  }
+  if (typeof window !== 'undefined' && sessionStorage.getItem('accessToken')) {
+  return redirect('/');
+}
+
 
   const Error = (err:any) => {
     console.log("Erreur de connexion",err);

@@ -1,15 +1,15 @@
-// auth-entities.ts
 export interface AuthRequest {
   email: string;
   motDePasse: string;
 }
+
 
 export interface User {
   id: number;
   nom: string;
   prenom: string;
   email: string;
-  contact: number;
+  contact: string;          
   typeUtilisateur: string;
   role: string;
   departement: string;
@@ -18,6 +18,7 @@ export interface User {
 }
 
 export interface AfterConnect {
-  token: string;
-  users: User; 
+  token: string; 
+  user: User;   
 }
+

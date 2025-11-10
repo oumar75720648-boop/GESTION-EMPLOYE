@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { User } from "../entities/auth-entities"; 
 
+
 type State = {
   authUser: User | null;            
   isLoggedIn: boolean;

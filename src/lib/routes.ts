@@ -4,7 +4,11 @@ export const Routes = {
   auth: {
     login: {
       title: "Connexion",
-      path: "/app/guest/auth",
+      path: "/auth",
+    },
+    logout: {
+      title: "Déconnexion",
+      path: "/auth",
     },
   },
   home: {
@@ -12,5 +16,6 @@ export const Routes = {
       title: "Tableau de bord",
       path: "/", 
     },
+    
   },
 };

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
@@ -9,11 +9,19 @@ import {
   IconBuilding,
   IconBell,
   IconSettings,
+  IconLogout,
 } from "@tabler/icons-react";
+import { useAuthStore } from "@/feature/auth/store/auth"; // ton store
 
 export default function AppSidebarAdmin() {
   const router = useRouter();
-  const pathname = usePathname(); // récupère l'URL actuelle
+  const pathname = usePathname();
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout(); // supprime token et user
+    router.push("/auth"); // redirige vers la page de login
+  };
 
   return (
     <aside className="w-[260px] bg-[#0a043c] text-white flex flex-col p-5 min-h-screen shadow-xl rounded-r-3xl">
@@ -31,7 +39,7 @@ export default function AppSidebarAdmin() {
         Menu
       </h2>
 
-      {/* Dashboard - sélectionné automatiquement si on est sur / */}
+      {/* Dashboard */}
       <button
         onClick={() => router.push("/")}
         className={`flex items-center gap-3 py-2 px-3 rounded-md transition ${
@@ -41,7 +49,7 @@ export default function AppSidebarAdmin() {
         <IconHome size={20} /> Dashboard
       </button>
 
-      {/* Autres boutons - style normal */}
+      {/* Autres boutons */}
       <button
         onClick={() => router.push("/liste-employe")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
@@ -75,6 +83,14 @@ export default function AppSidebarAdmin() {
         className="flex items-center gap-3 py-2 px-3 mt-auto rounded-md hover:bg-indigo-600 transition"
       >
         <IconSettings size={20} /> Paramètres
+      </button>
+
+      {/* Déconnexion */}
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
+      >
+        <IconLogout size={20} /> Déconnexion
       </button>
     </aside>
   );
