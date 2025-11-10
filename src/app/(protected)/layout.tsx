@@ -1,15 +1,24 @@
-"use client";
-import AppSidebarAdmin from "@/components/dashboard/app-sidebaradmin";
+import Layout from "@/components/layouts/layout";
+import Provider from "@/components/providers/provider";
 
-export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+import "@/app/globals.css";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Gestion des Employes",
+  description: "Premier appli",
+};
+
+export default function RootLayout({ 
+  children 
+}: Readonly<{children: React.ReactNode}>) {
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar toujours visible */}
-      <AppSidebarAdmin />
-      {/* Contenu principal */}
-      <main className="flex-1 bg-white rounded-tl-3xl shadow-inner p-6 m-4">
-        {children}
-      </main>
-    </div>
-  );
+      <html lang="fr">
+        <body className="">
+           <Provider>
+            <Layout>{children}</Layout>
+          </Provider>
+        </body>
+      </html>
+    );
 }
