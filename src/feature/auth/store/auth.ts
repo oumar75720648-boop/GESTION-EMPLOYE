@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { User } from "../entities/auth-entities"; 
 
-
 type State = {
   authUser: User | null;            
   isLoggedIn: boolean;
@@ -29,11 +28,11 @@ export const useAuthStore = create<State>((set:any) => ({
     }
     set({ authUser: user, isLoggedIn: !!user });
   },
-
+  
   logout: (redirectTo?: string) => {
     if (typeof window !== "undefined") {
-      sessionStorage.removeItem("accessToken");
-      sessionStorage.removeItem("authUser");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("authUser");
     }
     set({ isLoggedIn: false, authUser: null });
 

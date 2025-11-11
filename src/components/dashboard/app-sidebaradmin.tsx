@@ -51,21 +51,21 @@ export default function AppSidebarAdmin() {
 
       {/* Autres boutons */}
       <button
-        onClick={() => router.push("/liste-employe")}
+        onClick={() => router.push("/employe-list")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconUsers size={20} /> Employés
       </button>
 
       <button
-        onClick={() => router.push("/liste-demande")}
+        onClick={() => router.push("/demande-list")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconClipboard size={20} /> Demandes
       </button>
 
       <button
-        onClick={() => router.push("/departement")}
+        onClick={() => router.push("/department")}
         className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
       >
         <IconBuilding size={20} /> Département
@@ -79,19 +79,13 @@ export default function AppSidebarAdmin() {
       </button>
 
       <button
-        onClick={() => router.push("/parametre")}
+        onClick={() => router.push("/account")}
         className="flex items-center gap-3 py-2 px-3 mt-auto rounded-md hover:bg-indigo-600 transition"
       >
         <IconSettings size={20} /> Paramètres
       </button>
 
-      {/* Déconnexion */}
-      <button
-        onClick={handleLogout}
-        className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
-      >
-        <IconLogout size={20} /> Déconnexion
-      </button>
+      
     </aside>
   );
 }

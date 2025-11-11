@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { NavUser } from "@/components/(protected)/nav-user";
+import { NavUser } from "@/components/dashboard/nav-users";
 import { IconSearch } from "@tabler/icons-react";
 
 type PageHeaderProps = {

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { authSchema } from '../validate/validate-employe';
-import { employeService } from '../service/create';
+import { authService } from "@/feature/auth/services/login";
 import { useRouter } from 'next/navigation';
 
 export type EmployeFormData = {
@@ -44,7 +44,7 @@ export function useLoginForm() {
       setFetching(true);
 
       console.log("Données du formulaire :", data);
-      await employeService.createEmploye(data);
+      await authService.createEmploye(data);
 
       
       router.push('/liste-employe');

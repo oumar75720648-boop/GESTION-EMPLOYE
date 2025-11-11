@@ -12,15 +12,22 @@ export async function getUserInFo() {
 }
 
 export async function logout(data: AuthRequest) {
-  const response = await apiClients.post("/auth/logout", data);
-  sessionStorage.removeItem("token");
-  sessionStorage.removeItem("authUser");
-  return response.data;
+  try {
+    const response = await apiClients.post("/auth/logout", data);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("authUser");
+    return response.data;
+  } catch (error) {
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("authUser");
+    throw error;
+  }
 }
 
-
+  
+  
 export const authService = {
   authenticationWithEmail,
   logout,
-  getUserInFo
+  getUserInFo,
 };

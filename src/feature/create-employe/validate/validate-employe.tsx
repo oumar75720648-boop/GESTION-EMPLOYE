@@ -10,7 +10,6 @@ export const authSchema = z.object({
   motDePasse: z.string().min(6, { message: "Le mot de passe doit contenir au moins 6 caractères" }),
   typeUtilisateurId: z.string(),
   departementId: z.string(),
-  specialiteId: z.string(),
 });
 
 export type AuthDto = z.infer<typeof authSchema>;

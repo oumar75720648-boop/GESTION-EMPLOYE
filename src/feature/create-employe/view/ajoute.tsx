@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLoginForm } from "../hooks/use-employe";
+import { useState } from "react";
 
 export default function AjouterEmploye() {
   const router = useRouter();
+  const [visible, setVisible] = useState<boolean>(false);
 
   const {
     register,
@@ -22,8 +24,9 @@ export default function AjouterEmploye() {
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow relative">
+      {/* Bouton retour */}
       <button
-        onClick={() => router.push("/liste-employe")}
+        onClick={() => router.push("/employe-list")}
         className="flex items-center gap-2 text-[#0a043c] hover:text-blue-800 absolute top-4 left-4"
       >
         <ArrowLeft size={20} />
@@ -45,7 +48,9 @@ export default function AjouterEmploye() {
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           />
-          {errors.nom && <p className="text-red-500 text-sm">{errors.nom.message}</p>}
+          {errors.nom && (
+            <p className="text-red-500 text-sm">{errors.nom.message}</p>
+          )}
         </div>
 
         {/* Prénom */}
@@ -58,7 +63,9 @@ export default function AjouterEmploye() {
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           />
-          {errors.prenom && <p className="text-red-500 text-sm">{errors.prenom.message}</p>}
+          {errors.prenom && (
+            <p className="text-red-500 text-sm">{errors.prenom.message}</p>
+          )}
         </div>
 
         {/* Contact */}
@@ -71,7 +78,9 @@ export default function AjouterEmploye() {
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           />
-          {errors.contact && <p className="text-red-500 text-sm">{errors.contact.message}</p>}
+          {errors.contact && (
+            <p className="text-red-500 text-sm">{errors.contact.message}</p>
+          )}
         </div>
 
         {/* Email */}
@@ -84,20 +93,31 @@ export default function AjouterEmploye() {
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
         </div>
 
         {/* Mot de passe */}
-        <div>
+        <div className="relative">
           <label className="block mb-1 font-medium">Mot de passe</label>
           <input
             {...register("motDePasse")}
-            type="password"
+            type={visible ? "text" : "password"}
             placeholder="Mot de passe"
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 pr-10"
             required
           />
-          {errors.motDePasse && <p className="text-red-500 text-sm">{errors.motDePasse.message}</p>}
+          <button
+            type="button"
+            onClick={() => setVisible(!visible)}
+            className="absolute inset-y-11 right-2 flex items-center p-1 bg-transparent text-gray-500"
+          >
+            {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+          {errors.motDePasse && (
+            <p className="text-red-500 text-sm">{errors.motDePasse.message}</p>
+          )}
         </div>
 
         {/* Département */}
@@ -113,7 +133,11 @@ export default function AjouterEmploye() {
             <option value="Compta">Comptabilité</option>
             <option value="Marketing">Marketing</option>
           </select>
-          {errors.departementId && <p className="text-red-500 text-sm">{errors.departementId.message}</p>}
+          {errors.departementId && (
+            <p className="text-red-500 text-sm">
+              {errors.departementId.message}
+            </p>
+          )}
         </div>
 
         {/* Spécialité */}
@@ -128,12 +152,16 @@ export default function AjouterEmploye() {
             <option value="Marketing">Marketing</option>
             <option value="Support">Support</option>
           </select>
-          {errors.specialiteId && <p className="text-red-500 text-sm">{errors.specialiteId.message}</p>}
+          {errors.specialiteId && (
+            <p className="text-red-500 text-sm">
+              {errors.specialiteId.message}
+            </p>
+          )}
         </div>
 
         {/* Type Utilisateur */}
         <div>
-          <label className="block mb-1 font-medium" >Type Utilisateur</label>
+          <label className="block mb-1 font-medium">Type Utilisateur</label>
           <select
             {...register("typeUtilisateurId")}
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -143,9 +171,14 @@ export default function AjouterEmploye() {
             <option value="Employe">Employé</option>
             <option value="Secretaire">Secrétaire</option>
           </select>
-          {errors.typeUtilisateurId && <p className="text-red-500 text-sm">{errors.typeUtilisateurId.message}</p>}
+          {errors.typeUtilisateurId && (
+            <p className="text-red-500 text-sm">
+              {errors.typeUtilisateurId.message}
+            </p>
+          )}
         </div>
 
+        {/* Bouton Ajouter */}
         <Button
           type="submit"
           className="w-full bg-[#0a043c] text-white font-bold py-2 px-4 rounded hover:bg-blue-900 transition"

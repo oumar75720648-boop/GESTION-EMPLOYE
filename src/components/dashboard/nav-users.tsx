@@ -9,7 +9,12 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { IconChevronDown, IconUserCircle, IconLogout } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconUserCircle,
+  IconLogout,
+} from "@tabler/icons-react";
+import { useAuthStore } from "@/feature/auth/store/auth"; // store auth
 
 type UserProps = {
   user: { name: string; email: string; avatar?: string };
@@ -17,9 +22,12 @@ type UserProps = {
 
 export function NavUser({ user }: UserProps) {
   const router = useRouter();
+  const logout = useAuthStore((state) => state.logout); // utilise ton store
 
-  const goToProfile = () => router.push("/(protected)/admin/compte");
-  const logout = () => router.push("/");
+  const goToProfile = () => router.push("/profil"); // page profil
+  const handleLogout = () => {
+    logout("/auth"); // supprime token + redirection
+  };
 
   return (
     <DropdownMenu>
@@ -38,13 +46,19 @@ export function NavUser({ user }: UserProps) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56 sm:w-64 mt-2">
-        <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={goToProfile}>
+        <DropdownMenuItem
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={goToProfile}
+        >
           <IconUserCircle size={18} /> Compte
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={logout}>
+        <DropdownMenuItem
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={handleLogout}
+        >
           <IconLogout size={18} /> Déconnexion
         </DropdownMenuItem>
       </DropdownMenuContent>
