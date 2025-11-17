@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from "axios";
+import axios from "axios";
 import { Config } from "./config";
 
 const apiClients = axios.create({
@@ -9,25 +9,34 @@ const apiClients = axios.create({
   },
 });
 
+// Ajouter le token à chaque requête si présent
 apiClients.interceptors.request.use((config: any) => {
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("accessToken");
     if (token) {
-      const tokenByBearer = "Bearer " + token; // espace après Bearer
       config.headers = {
         ...config.headers,
-        Authorization: tokenByBearer,
+        Authorization: `Bearer ${token}`,
       };
     }
   }
   return config;
 });
 
+// Gérer les erreurs 401 (token manquant ou invalide)
 apiClients.interceptors.response.use(
   (response: any) => response,
   (error: any) => {
     if (error.response?.status === 401) {
-      console.warn("quite ici");
+      console.warn("401 Unauthorized : token manquant ou invalide");
+
+      if (typeof window !== "undefined") {
+        // Supprimer le token si invalide
+        localStorage.removeItem("accessToken");
+
+        // Redirection vers la page de login
+        window.location.href = "/auth";
+      }
     }
     return Promise.reject(error);
   }

@@ -3,12 +3,17 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useLoginForm } from "../hooks/use-employe";
+import { useEmployeForm } from "../hooks/use-employe";
 import { useState } from "react";
+import { useDepartements } from "@/feature/departement/hooks/use-depart";
+import { useSpecialites } from "@/feature/specialite/hooks/use-special";
 
 export default function AjouterEmploye() {
   const router = useRouter();
-  const [visible, setVisible] = useState<boolean>(false);
+  const [visible, setVisible] = useState(false);
+
+  const { departements } = useDepartements();
+  const { specialites } = useSpecialites();
 
   const {
     register,
@@ -16,15 +21,14 @@ export default function AjouterEmploye() {
     action,
     pending,
     formState: { errors },
-  } = useLoginForm();
+  } = useEmployeForm();
 
-  const onError = (err: any) => {
-    console.log("Erreur formulaire :", err);
+  const onError = (errors: any) => {
+    console.log("Erreurs du formulaire :", errors);
   };
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow relative">
-      {/* Bouton retour */}
       <button
         onClick={() => router.push("/employe-list")}
         className="flex items-center gap-2 text-[#0a043c] hover:text-blue-800 absolute top-4 left-4"
@@ -46,7 +50,6 @@ export default function AjouterEmploye() {
             type="text"
             placeholder="Nom"
             className="w-full border border-gray-300 rounded px-3 py-2"
-            required
           />
           {errors.nom && (
             <p className="text-red-500 text-sm">{errors.nom.message}</p>
@@ -61,7 +64,6 @@ export default function AjouterEmploye() {
             type="text"
             placeholder="Prénom"
             className="w-full border border-gray-300 rounded px-3 py-2"
-            required
           />
           {errors.prenom && (
             <p className="text-red-500 text-sm">{errors.prenom.message}</p>
@@ -76,7 +78,6 @@ export default function AjouterEmploye() {
             type="text"
             placeholder="Téléphone"
             className="w-full border border-gray-300 rounded px-3 py-2"
-            required
           />
           {errors.contact && (
             <p className="text-red-500 text-sm">{errors.contact.message}</p>
@@ -91,7 +92,6 @@ export default function AjouterEmploye() {
             type="email"
             placeholder="Email"
             className="w-full border border-gray-300 rounded px-3 py-2"
-            required
           />
           {errors.email && (
             <p className="text-red-500 text-sm">{errors.email.message}</p>
@@ -106,12 +106,11 @@ export default function AjouterEmploye() {
             type={visible ? "text" : "password"}
             placeholder="Mot de passe"
             className="w-full border border-gray-300 rounded px-3 py-2 pr-10"
-            required
           />
           <button
             type="button"
             onClick={() => setVisible(!visible)}
-            className="absolute inset-y-11 right-2 flex items-center p-1 bg-transparent text-gray-500"
+            className="absolute top-2 right-2 flex items-center p-1 bg-transparent text-gray-500"
           >
             {visible ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
@@ -128,10 +127,11 @@ export default function AjouterEmploye() {
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
             <option value="">-- Sélectionnez un département --</option>
-            <option value="RH">Ressources Humaines</option>
-            <option value="Info">Informatique</option>
-            <option value="Compta">Comptabilité</option>
-            <option value="Marketing">Marketing</option>
+            {departements.map((dep) => (
+              <option key={dep.id} value={dep.id}>
+                {dep.nomDepartement}
+              </option>
+            ))}
           </select>
           {errors.departementId && (
             <p className="text-red-500 text-sm">
@@ -148,9 +148,11 @@ export default function AjouterEmploye() {
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
             <option value="">-- Sélectionnez une spécialité --</option>
-            <option value="Dev">Développement</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Support">Support</option>
+            {specialites.map((spec) => (
+              <option key={spec.id} value={spec.id}>
+                {spec.nomSpecialite}
+              </option>
+            ))}
           </select>
           {errors.specialiteId && (
             <p className="text-red-500 text-sm">
@@ -178,7 +180,6 @@ export default function AjouterEmploye() {
           )}
         </div>
 
-        {/* Bouton Ajouter */}
         <Button
           type="submit"
           className="w-full bg-[#0a043c] text-white font-bold py-2 px-4 rounded hover:bg-blue-900 transition"

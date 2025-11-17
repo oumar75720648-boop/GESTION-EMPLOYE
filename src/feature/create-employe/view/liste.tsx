@@ -3,17 +3,36 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
+import { employeService } from "@/feature/create-employe/service/create";
+import { EmployeFormData } from "@/feature/create-employe/entites/employe-end";
 
 export default function ListeEmployes() {
   const router = useRouter();
+  const [employes, setEmployes] = useState<EmployeFormData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Charger les employés au montage du composant
+  useEffect(() => {
+    async function loadEmployes() {
+      try {
+        const data = await employeService.fetchEmployes();
+        setEmployes(data);
+      } catch (error) {
+        console.error("Erreur récupération employés :", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadEmployes();
+  }, []);
+
+  if (loading) return <p className="text-center mt-10">Chargement...</p>;
 
   return (
     <div className="flex flex-col items-center justify-start min-h-[70vh] w-full p-6 bg-gray-50">
-    
       <div className="flex w-full max-w-6xl justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-[#160b7c]">Gestion Employés</h1>
-
-      
         <div className="flex items-center gap-2">
           <Input
             type="text"
@@ -30,7 +49,6 @@ export default function ListeEmployes() {
         <h2 className="text-2xl font-semibold text-[#160b7c]">
           Liste des employés
         </h2>
-
         <Button
           onClick={() => router.push("/add-employee")}
           className="bg-[#160b7c] hover:bg-[#0f0660] text-white px-4 py-2 rounded-lg shadow"
@@ -39,7 +57,6 @@ export default function ListeEmployes() {
         </Button>
       </div>
 
-   
       <div className="w-full max-w-6xl overflow-x-auto bg-white rounded-md p-4 shadow-md">
         <table className="min-w-full divide-y divide-gray-200 border border-gray-200">
           <thead className="bg-gray-100">
@@ -69,27 +86,34 @@ export default function ListeEmployes() {
           </thead>
 
           <tbody className="divide-y divide-gray-200">
-            <tr className="hover:bg-gray-50">
-              <td className="px-4 py-2 text-sm text-gray-800">&nbsp;</td>
-              <td className="px-4 py-2 text-sm text-gray-800">&nbsp;</td>
-              <td className="px-4 py-2 text-sm text-gray-800">&nbsp;</td>
-              <td className="px-4 py-2 text-sm text-gray-800">&nbsp;</td>
-              <td className="px-4 py-2 text-sm text-gray-800">&nbsp;</td>
-              <td className="px-4 py-2 text-sm text-gray-800">&nbsp;</td>
-              <td className="px-4 py-2 text-center">
-                <Button
-                  variant="destructive"
-                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-                
-                >
-                  Supprimer
-                </Button>
-              </td>
-            </tr>
+            {employes.map((emp) => (
+              <tr key={emp.id} className="hover:bg-gray-50">
+                <td className="px-4 py-2 text-sm text-gray-800">{emp.nom}</td>
+                <td className="px-4 py-2 text-sm text-gray-800">
+                  {emp.prenom}
+                </td>
+                <td className="px-4 py-2 text-sm text-gray-800">{emp.email}</td>
+                <td className="px-4 py-2 text-sm text-gray-800">
+                  {emp.contact}
+                </td>
+                <td className="px-4 py-2 text-sm text-gray-800">
+                  {emp.departementId}
+                </td>
+                <td className="px-4 py-2 text-sm text-gray-800">
+                  {emp.specialiteId}
+                </td>
+                <td className="px-4 py-2 text-center">
+                  <Button
+                    variant="destructive"
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                  >
+                    Supprimer
+                  </Button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
-
-       
       </div>
     </div>
   );

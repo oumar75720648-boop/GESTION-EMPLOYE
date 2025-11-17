@@ -1,4 +1,4 @@
-import ListeEmployes from "@/feature/admin/listeemploye/liste";
+import ListeEmployes from "@/feature/create-employe/view/liste";
 export default function Page() {
   return <ListeEmployes />;
 }

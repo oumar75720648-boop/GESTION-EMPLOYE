@@ -3,6 +3,10 @@ export interface AuthRequest {
   motDePasse: string;
 }
 
+export interface AfterConnect {
+  token: string;
+  user: User;
+}
 
 export interface User {
   id: number;
@@ -16,9 +20,3 @@ export interface User {
   specialite: string;
   derniereConnexion: string;
 }
-
-export interface AfterConnect {
-  token: string; 
-  user: User;   
-}
-

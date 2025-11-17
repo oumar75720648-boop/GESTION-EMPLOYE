@@ -1,48 +1,73 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { departementService } from "../service/departement-ser";
-import { Departement } from "../entites/depart-ent";
+import { useState, useEffect, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  DepartementDto,
+  departementSchema,
+} from "@/feature/departement/validate/depart-validate";
+import { Departement } from "@/feature/departement/entites/depart-ent";
+import { departementService } from "@/feature/departement/service/departement-ser";
 
-export function useDepartements() {
+export const useDepartements = () => {
   const [departements, setDepartements] = useState<Departement[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Charger les départements au montage
-  useEffect(() => {
+  const form = useForm<DepartementDto>({
+    resolver: zodResolver(departementSchema),
+    defaultValues: { nomDepartement: "" },
+  });
+
+  // Charger les départements depuis l'API
+  const fetchDepartements = useCallback(async () => {
     setLoading(true);
-    departementService
-      .getDepartements()
-      .then((data) => setDepartements(data))
-      .catch(() => setError("Erreur lors du chargement des départements"))
-      .finally(() => setLoading(false));
+    try {
+      const data = await departementService.getDepartements();
+      setDepartements(data);
+      setError(null);
+    } catch (err: any) {
+      console.error(err);
+      setError("Impossible de charger les départements.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Ajouter un département
-  const addDepartement = async (nomDepartement: string) => {
-    if (!nomDepartement.trim()) return;
-    try {
-      const created = await departementService.createDepartement({
-        nomDepartement,
-      });
-      setDepartements([...departements, created]);
-    } catch {
-      setError("Impossible de créer le département");
-    }
-  };
+  useEffect(() => {
+    fetchDepartements();
+  }, [fetchDepartements]);
 
-  // Supprimer un département
-  const deleteDepartement = async (nomDepartement: string) => {
+  // Création uniquement
+  const handleSubmit = async (data: DepartementDto) => {
+    setLoading(true);
+    const now = new Date().toISOString();
+
     try {
-      await departementService.deleteDepartement(nomDepartement);
-      setDepartements(
-        departements.filter((d) => d.nomDepartement !== nomDepartement)
+      const newDept = await departementService.createDepartement(
+        data.nomDepartement
       );
-    } catch {
-      setError("Impossible de supprimer le département");
+
+      // On ajoute le département à la liste
+      setDepartements((prev) => [...prev, newDept]);
+
+      form.reset();
+      setError(null);
+    } catch (err: any) {
+      console.error(err);
+      setError("Erreur lors de l'enregistrement du département.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { departements, loading, error, addDepartement, deleteDepartement };
-}
+  return {
+    departements,
+    form,
+    loading,
+    error,
+    handleSubmit,
+    fetchDepartements,
+  };
+};

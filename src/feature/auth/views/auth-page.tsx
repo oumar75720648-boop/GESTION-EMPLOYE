@@ -1,34 +1,40 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useLoginForm } from "../hooks/use-auth";
-import { useState } from "react";
-import { redirect } from "next/navigation";
-
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 export function Connexion() {
   const [visible, setVisible] = useState<boolean>(false);
-
-  const { 
+  const router = useRouter();
+  const {
     handleSubmit,
     register,
     formState: { isSubmitted, errors },
     pending,
-    action
+    action,
   } = useLoginForm();
 
-  if (typeof window !== 'undefined' && sessionStorage.getItem('accessToken')) {
-  return redirect('/');
-}
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("accessToken")) {
+      router.push("/");
+    }
+  }, []);
 
-
-  const Error = (err:any) => {
-    console.log("Erreur de connexion",err);
-  }
+  const Error = (err: any) => {
+    console.log("Erreur de connexion", err);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
@@ -50,16 +56,13 @@ export function Connexion() {
             Connexion à votre compte
           </CardTitle>
           <CardDescription className="text-center text-gray-700 text-lg">
-            Entrez votre adresse e-mail et votre mot de passe pour vous connecter
+            Entrez votre adresse e-mail et votre mot de passe pour vous
+            connecter
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form 
-            className="space-y-4" 
-            onSubmit={handleSubmit(action,Error)}>
-
+          <form className="space-y-4" onSubmit={handleSubmit(action, Error)}>
             <FieldGroup>
-
               <Field>
                 <FieldLabel htmlFor="email">Adresse e-mail</FieldLabel>
                 <Input
@@ -69,45 +72,47 @@ export function Connexion() {
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
                 )}
               </Field>
 
-                        <Field className="relative w-full">
-            <FieldLabel htmlFor="motDePasse">Mot de passe</FieldLabel>
+              <Field className="relative w-full">
+                <FieldLabel htmlFor="motDePasse">Mot de passe</FieldLabel>
 
-            <div className="relative w-full">
-              <Input
-                id="motDePasse"
-                type={visible ? "text" : "password"}
-                placeholder="Mot de passe"
-                {...register("motDePasse")}
-                className="pr-10 w-full"
-              />
-              <button
-                type="button"
-                onClick={() => setVisible(!visible)}
-                className="absolute inset-y-0 right-2 flex items-center p-1 bg-transparent text-gray-500"
-              >
-                {visible ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
+                <div className="relative w-full">
+                  <Input
+                    id="motDePasse"
+                    type={visible ? "text" : "password"}
+                    placeholder="Mot de passe"
+                    {...register("motDePasse")}
+                    className="pr-10 w-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVisible(!visible)}
+                    className="absolute inset-y-0 right-2 flex items-center p-1 bg-transparent text-gray-500"
+                  >
+                    {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
 
-            {errors.motDePasse && (
-              <p className="text-red-500 text-sm mt-1">{errors.motDePasse.message}</p>
-            )}
-          </Field>
-
+                {errors.motDePasse && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.motDePasse.message}
+                  </p>
+                )}
+              </Field>
 
               <Field className="flex flex-col gap-3 pt-3">
-                <Button 
+                <Button
                   type="submit"
                   disabled={pending}
                   className="bg-[#160b7c] text-white hover:bg-[#0f0660]"
                 >
                   {pending || isSubmitted ? "Connexion..." : "Se connecter"}
                 </Button>
-
               </Field>
             </FieldGroup>
           </form>

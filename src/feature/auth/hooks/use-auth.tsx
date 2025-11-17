@@ -47,7 +47,7 @@ export function useLoginForm() {
 
       if (accessToken) {
         localStorage.setItem("accessToken", accessToken);
-        router.push(Routes.home.dashboard.path);
+        router.push(Routes.home.dashboard.path);  
       }
     } catch (err: any) {
       setError(

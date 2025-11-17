@@ -1,65 +1,60 @@
-// use-employe.ts
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { authSchema } from '../validate/validate-employe';
-import { authService } from "@/feature/auth/services/login";
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { authSchema } from "../validate/validate-employe";
+import { employeService } from "../service/create";
+import { EmployeFormData } from "../entites/employe-end";
 
-export type EmployeFormData = {
-  nom: string;
-  prenom: string;
-  contact: string;
-  email: string;
-  motDePasse: string;
-  departementId: string;
-  specialiteId: string;
-  typeUtilisateurId: string;
-};
+export type EmployeFormData = EmployeFormData ;
 
-export function useLoginForm() {
-  const [error, setError] = useState<string | null>(null);
-  const [fetching, setFetching] = useState<boolean>(false);
-  const router = useRouter();
+export function useEmployeForm() {
+  const [pending, setPending] = useState(false);
 
   const form = useForm<EmployeFormData>({
-    resolver: zodResolver(authSchema as any),
+    resolver: zodResolver(authSchema),
     defaultValues: {
-      nom: '',
-      prenom: '',
-      contact: '',
-      email: '',
-      motDePasse: '',
-      departementId: '',
-      specialiteId: '',
-      typeUtilisateurId: '',
+      id: null,
+      nom: "",
+      prenom: "",
+      contact: "",
+      email: "",
+      motDePasse: "",
+      departementId: "",
+      specialiteId: "",
+      typeUtilisateurId: "",
     },
   });
 
   const action = async (data: EmployeFormData) => {
     try {
-      setError(null);
-      setFetching(true);
+      setPending(true);
 
-      console.log("Données du formulaire :", data);
-      await authService.createEmploye(data);
+      const payload = {
+        ...data,
+        departementId: data.departementId ? Number(data.departementId) : null,
+        specialiteId: data.specialiteId ? Number(data.specialiteId) : null,
+      };
 
-      
-      router.push('/liste-employe');
-    } catch (err: any) {
-      setError(err?.response?.data?.error?.message || "Erreur lors de la création de l'employé");
-      console.error("Erreur création employé :", err);
+      await employeService.createEmploye(payload);
+
+      // Reset du formulaire après création
+      form.reset();
+    } catch (error) {
+      console.error("Erreur création employé :", error);
+      // Ici tu peux gérer l'erreur avec un composant visuel ou un state d'erreur
     } finally {
-      setFetching(false);
+      setPending(false);
     }
   };
 
   return {
-    ...form,
+    register: form.register,
+    handleSubmit: form.handleSubmit,
+    form,
     action,
-    error,
-    pending: fetching,
+    pending,
+    formState: form.formState,
   };
 }

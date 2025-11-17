@@ -25,7 +25,6 @@ export async function logout(data: AuthRequest) {
 }
 
   
-  
 export const authService = {
   authenticationWithEmail,
   logout,
