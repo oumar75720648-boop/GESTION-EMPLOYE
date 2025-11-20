@@ -2,10 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconLock, IconUser } from "@tabler/icons-react";
+import { IconLock } from "@tabler/icons-react";
 import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useChangePassword } from "@/feature/auth/hooks/change-password";
 
 export default function Password() {
   const [actuelPassword, setActuelPassword] = useState("");
@@ -14,18 +14,29 @@ export default function Password() {
   const [visibleActuel, setVisibleActuel] = useState(false);
   const [visibleNew, setVisibleNew] = useState(false);
   const [visibleConfirm, setVisibleConfirm] = useState(false);
-  const [message, setMessage] = useState("");
-  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { changePassword, error, message } = useChangePassword();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-   
-  }
+
+    await changePassword({
+      CurrentPassword: actuelPassword,
+      NewPassword: newPassword,
+      confirmPassword: confirmPassword,
+    });
+
+    if (!error) {
+      setActuelPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 p-6">
-     <main className="flex flex-col items-center flex-1 w-full space-y-8">
-       <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border-l-4 border-[#160b7c]">
+      <main className="flex flex-col items-center flex-1 w-full space-y-8">
+        <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border-l-4 border-[#160b7c]">
           <div className="flex justify-center mb-6">
             <div className="bg-[#160b7c] rounded-full p-4">
               <IconLock size={32} className="text-white" />
@@ -37,7 +48,7 @@ export default function Password() {
           </h2>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-           
+            {/* Mot de passe actuel */}
             <div className="relative">
               <label className="block mb-1 font-medium text-black">
                 Mot de passe actuel
@@ -59,7 +70,7 @@ export default function Password() {
               </button>
             </div>
 
-            
+            {/* Nouveau mot de passe */}
             <div className="relative">
               <label className="block mb-1 font-medium text-black">
                 Nouveau mot de passe
@@ -81,6 +92,7 @@ export default function Password() {
               </button>
             </div>
 
+            {/* Confirmer le mot de passe */}
             <div className="relative">
               <label className="block mb-1 font-medium text-black">
                 Confirmer le mot de passe
@@ -102,13 +114,19 @@ export default function Password() {
               </button>
             </div>
 
-            <Button type="submit" className="bg-[#160b7c] hover:bg-[#0f0a66] text-white w-full transition">
+            {/* Bouton */}
+            <Button
+              type="submit"
+              className="bg-[#160b7c] hover:bg-[#0f0a66] text-white w-full transition"
+            >
               Changer le mot de passe
             </Button>
 
+            {/* Messages */}
             {message && (
-              <p className="mt-2 text-sm text-green-600 text-center">{message}</p>
+              <p className="text-green-600 text-center mt-2">{message}</p>
             )}
+            {error && <p className="text-red-600 text-center mt-2">{error}</p>}
           </form>
         </div>
       </main>

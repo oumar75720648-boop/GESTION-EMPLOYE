@@ -20,7 +20,6 @@ export const useDepartements = () => {
     defaultValues: { nomDepartement: "" },
   });
 
-  // Charger les départements depuis l'API
   const fetchDepartements = useCallback(async () => {
     setLoading(true);
     try {

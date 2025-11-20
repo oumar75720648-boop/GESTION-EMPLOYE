@@ -41,6 +41,7 @@ export const useSpecialites = () => {
     try {
       if (editId !== null) {
         // ici tu peux ajouter la modification via API si nécessaire
+        {/* chat gtp */}
         setSpecialites((prev) =>
           prev.map((s) =>
             s.id === editId

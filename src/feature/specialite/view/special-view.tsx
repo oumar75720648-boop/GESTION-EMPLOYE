@@ -37,6 +37,7 @@ export default function SpecialiteView() {
             {...form.register("idDepartement")}
             className="border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#160b7c]"
           >
+            {/*chat gpt */}
             <option value={0}>Choisir un département</option>
             {departements.map((dep) => (
               <option key={dep.id} value={dep.id}>
@@ -69,7 +70,7 @@ export default function SpecialiteView() {
             </p>
           )}
         </div>
-
+    {/*chat gpt*/}
         <Button
           type="submit"
           className={`px-4 py-2 rounded-lg ${

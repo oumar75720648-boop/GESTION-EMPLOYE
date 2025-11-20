@@ -1,17 +1,16 @@
 import apiClient from "@/lib/api/axios";
-import { EmployeFormData } from "../entites/employe-end"; 
 
-export async function createEmploye(data: EmployeFormData): Promise<EmployeFormData> {
+export async function createEmploye(data: any) {
   const response = await apiClient.post("/utilisateurs", data);
-  return response.data as EmployeFormData;
+  return response.data;
 }
 
-export async function fetchEmployes(): Promise<EmployeFormData[]> {
+export async function getEmployes() {
   const response = await apiClient.get("/utilisateurs");
-  return response.data as EmployeFormData[];
+  return response.data; 
 }
 
 export const employeService = {
   createEmploye,
-  fetchEmployes,
+  getEmployes,
 };

@@ -5,19 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { employeService } from "@/feature/create-employe/service/create";
-import { EmployeFormData } from "@/feature/create-employe/entites/employe-end";
+import { EmployeForm } from "@/feature/create-employe/entites/employe-end";
+import { useDepartements } from "@/feature/departement/hooks/use-depart";
+import { useSpecialites } from "@/feature/specialite/hooks/use-special";
 
 export default function ListeEmployes() {
   const router = useRouter();
-  const [employes, setEmployes] = useState<EmployeFormData[]>([]);
+  const [employes, setEmployes] = useState<EmployeForm[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Charger les employés au montage du composant
+  const { departements } = useDepartements();
+  const { specialites } = useSpecialites();
+
   useEffect(() => {
     async function loadEmployes() {
       try {
-        const data = await employeService.fetchEmployes();
-        setEmployes(data);
+        const data = await employeService.getEmployes();
+        setEmployes(data); 
       } catch (error) {
         console.error("Erreur récupération employés :", error);
       } finally {
@@ -47,7 +51,7 @@ export default function ListeEmployes() {
 
       <div className="flex w-full max-w-6xl justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-[#160b7c]">
-          Liste des employés
+          Liste des employés ({employes.length})
         </h2>
         <Button
           onClick={() => router.push("/add-employee")}
@@ -60,6 +64,7 @@ export default function ListeEmployes() {
       <div className="w-full max-w-6xl overflow-x-auto bg-white rounded-md p-4 shadow-md">
         <table className="min-w-full divide-y divide-gray-200 border border-gray-200">
           <thead className="bg-gray-100">
+            {/*les titre des colonne*/}
             <tr>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
                 Nom
@@ -84,34 +89,46 @@ export default function ListeEmployes() {
               </th>
             </tr>
           </thead>
-
+   {/*chat gpt*/}
           <tbody className="divide-y divide-gray-200">
-            {employes.map((emp) => (
-              <tr key={emp.id} className="hover:bg-gray-50">
-                <td className="px-4 py-2 text-sm text-gray-800">{emp.nom}</td>
-                <td className="px-4 py-2 text-sm text-gray-800">
-                  {emp.prenom}
-                </td>
-                <td className="px-4 py-2 text-sm text-gray-800">{emp.email}</td>
-                <td className="px-4 py-2 text-sm text-gray-800">
-                  {emp.contact}
-                </td>
-                <td className="px-4 py-2 text-sm text-gray-800">
-                  {emp.departementId}
-                </td>
-                <td className="px-4 py-2 text-sm text-gray-800">
-                  {emp.specialiteId}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  <Button
-                    variant="destructive"
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-                  >
-                    Supprimer
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {employes.map((emp) => {
+              const departementNom =
+                departements.find((d) => d.id === emp.departementId)
+                  ?.nomDepartement || "—";
+              const specialiteNom =
+                specialites.find((s) => s.id === emp.specialiteId)
+                  ?.nomSpecialite || "—";
+
+              return (
+                <tr key={emp.id} className="hover:bg-gray-50">
+                  {/* chaque ligne sur un employe */}
+                  <td className="px-4 py-2 text-sm text-gray-800">{emp.nom}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {emp.prenom}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {emp.email}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {emp.contact}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {departementNom}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">
+                    {specialiteNom}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    <Button
+                      variant="destructive"
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                    >
+                      Supprimer
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -3,16 +3,23 @@ import { z } from "zod";
 export const authSchema = z.object({
   nom: z.string().min(1, { message: "Le nom est requis" }),
   prenom: z.string().min(1, { message: "Le prénom est requis" }),
-  contact: z.string().min(1, { message: "Le contact est requis" }).regex(/^\d+$/, { message: "Uniquement des chiffres" }),
-  email: z.string().email({ message: "L'email doit être valide" }),
-  motDePasse: z
+  contact: z.string().min(1, { message: "Contact requis" }),
+  email: z.string().email({ message: "Email invalide" }),
+  motDePasse: z.string().min(6, { message: "Au moins 6 caractères" }),
+
+  // 🔥 Transforme automatiquement en number
+  departementId: z
     .string()
-    .min(6, { message: "Le mot de passe doit contenir au moins 6 caractères" }),
-  departementId: z.string().min(1, { message: "Le département est requis" }),
-  specialiteId: z.string().min(1, { message: "La spécialité est requise" }),
+    .min(1, { message: "Département requis" })
+    .transform((val) => Number(val)),
+
+  specialiteId: z
+    .string()
+    .min(1, { message: "Spécialité requise" })
+    .transform((val) => Number(val)),
+
   typeUtilisateurId: z
     .string()
-    .min(1, { message: "Le type d'utilisateur est requis" }),
+    .min(1, { message: "Type utilisateur requis" })
+    .transform((val) => Number(val)),
 });
-export type AuthDto = z.infer<typeof authSchema>;
-

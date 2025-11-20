@@ -32,11 +32,12 @@ export function NavUser() {
     logout("/auth");
   };
 
-  const goToProfile = () => router.push("/profil");
+  const goToProfile = () => router.push("/account");
 
-  // 🔹 Pas d'avatar disponible, juste fallback
-  const userName = userMe.user?.nom ?? "Utilisateur";
-  const userEmail = userMe.user?.email ?? "email@exemple.com";
+  const userName =
+    userMe.nom && userMe.prenom
+      ? `${userMe.nom} ${userMe.prenom}`
+      : "Utilisateur";
 
   return (
     <DropdownMenu>
@@ -45,7 +46,7 @@ export function NavUser() {
           <Avatar className="w-8 h-8">
             <AvatarFallback>{userName[0]}</AvatarFallback>
           </Avatar>
-          <span className="font-medium truncate">{userEmail}</span>
+          <span className="font-medium truncate">{userName}</span>
           <IconChevronDown size={18} />
         </button>
       </DropdownMenuTrigger>

@@ -24,9 +24,24 @@ export async function logout(data: AuthRequest) {
   }
 }
 
+
+
+export async function authenticationChangePassword(data: ChangePasswordSchema) {
+  try {
+    const response = await apiClients.post("/users/me/password/change", data);
+
+    return response.data as { message: string; accessToken?: string };
+  } catch (error: any) {
+    throw new Error(
+      error?.response?.data?.message ||
+        "Erreur lors du changement de mot de passe"
+    );
+  }
+}
   
 export const authService = {
   authenticationWithEmail,
   logout,
   getUserInFo,
+  authenticationChangePassword,
 };
