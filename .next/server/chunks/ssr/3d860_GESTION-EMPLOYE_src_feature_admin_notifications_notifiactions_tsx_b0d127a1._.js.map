@@ -1,0 +1,1 @@
+{"version":3,"sources":["turbopack:///[project]/Desktop/GESTION-EMPLOYE/src/feature/admin/notifications/notifiactions.tsx"],"sourcesContent":["\"use client\" ;\r\n\r\nexport default function Notifications(){\r\n    return(\r\n        <div>\r\n            admin\r\n        </div>\r\n    )\r\n}"],"names":[],"mappings":"+EAEe,SAAS,IACpB,MACI,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI,SAIb"}

@@ -1,0 +1,3 @@
+module.exports=[81463,a=>{"use strict";a.s(["default",()=>c]);var b=a.i(89556);function c(){return(0,b.jsxs)("div",{className:"flex flex-col items-center justify-center min-h-[70vh]",children:[(0,b.jsx)("h2",{className:"text-2xl font-bold text-[#160b7c] mb-4",children:"Liste des demandes"}),(0,b.jsx)("p",{children:"(Affichage des demandes ici)"})]})}}];
+
+//# sourceMappingURL=Desktop_GESTION-EMPLOYE_src_feature_admin_departement_departement_tsx_bd6b2056._.js.map

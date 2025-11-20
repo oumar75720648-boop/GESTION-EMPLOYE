@@ -1,0 +1,3 @@
+module.exports=[72907,a=>{"use strict";a.s(["default",()=>d],72907);var b=a.i(89556);function c(){return(0,b.jsx)("div",{children:"employe"})}function d(){return(0,b.jsx)("div",{className:"flex min-h-screen bg-white",children:(0,b.jsx)("main",{className:"flex-1 p-6 flex flex-col items-center",children:(0,b.jsx)(c,{})})})}}];
+
+//# sourceMappingURL=Desktop_GESTION-EMPLOYE_src_app_%28protected%29_notification_page_tsx_4160a446._.js.map

@@ -1,0 +1,1 @@
+{"version":3,"sources":["turbopack:///[project]/Desktop/GESTION-EMPLOYE/src/app/(protected)/statut/page.tsx"],"sourcesContent":["\r\nexport default function Page() {\r\n  return <Statut />;\r\n}\r\n"],"names":[],"mappings":"6SACe,SAAS,IACtB,MAAO,CAAA,EAAA,EAAA,GAAA,EAAC,OAAA,CAAA,EACV"}
