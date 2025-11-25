@@ -1,135 +1,119 @@
-"use client";
+    "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { IconLock } from "@tabler/icons-react";
-import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
-import { useChangePassword } from "@/feature/auth/hooks/change-password";
+    import { useState } from "react";
+    import { useRouter } from "next/navigation";
+    import { Button } from "@/components/ui/button";
+    import { Input } from "@/components/ui/input";
+    import { useChangePasswordForm } from "../hooks/change-password";
+    import { Eye, EyeOff } from "lucide-react";
 
-export default function Password() {
-  const [actuelPassword, setActuelPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [visibleActuel, setVisibleActuel] = useState(false);
-  const [visibleNew, setVisibleNew] = useState(false);
-  const [visibleConfirm, setVisibleConfirm] = useState(false);
+    export function ChangePassword({ userId }: { userId: number }) {
+    const router = useRouter();
 
-  const { changePassword, error, message } = useChangePassword();
+    const [visibleCurrent, setVisibleCurrent] = useState(false);
+    const [visibleNew, setVisibleNew] = useState(false);
+    const [visibleConfirm, setVisibleConfirm] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    const { changePassword, pending, error, message } = useChangePasswordForm();
 
-    await changePassword({
-      CurrentPassword: actuelPassword,
-      NewPassword: newPassword,
-      confirmPassword: confirmPassword,
-    });
+    const onSubmit = async (data: any) => {
+        if (!userId) return;
 
-    if (!error) {
-      setActuelPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    }
-  };
+        if (data.newPassword !== data.confirmPassword) {
+        alert(
+            "Le mot de passe confirmé ne correspond pas au nouveau mot de passe."
+        );
+        return;
+        }
 
-  return (
-    <div className="flex flex-col min-h-screen bg-gray-50 p-6">
-      <main className="flex flex-col items-center flex-1 w-full space-y-8">
-        <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border-l-4 border-[#160b7c]">
-          <div className="flex justify-center mb-6">
-            <div className="bg-[#160b7c] rounded-full p-4">
-              <IconLock size={32} className="text-white" />
-            </div>
-          </div>
+        await changePassword({
+        userId,
+        oldPassword: data.currentPassword,
+        newPassword: data.newPassword,
+        });
 
-          <h2 className="text-2xl font-bold text-[#160b7c] mb-6 text-center">
-            Changer le mot de passe
-          </h2>
+        if (!error) {
+        router.push("/");
+        }
+    };
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Mot de passe actuel */}
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
+        <form
+            onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            const data = {
+                currentPassword: formData.get("currentPassword")?.toString() || "",
+                newPassword: formData.get("newPassword")?.toString() || "",
+                confirmPassword: formData.get("confirmPassword")?.toString() || "",
+            };
+            onSubmit(data);
+            }}
+            className="space-y-4 w-full max-w-md bg-white p-6 rounded-xl shadow-lg"
+        >
+            <h2 className="text-center text-2xl font-semibold mb-4">
+            Changer votre mot de passe
+            </h2>
+
             <div className="relative">
-              <label className="block mb-1 font-medium text-black">
-                Mot de passe actuel
-              </label>
-              <Input
-                type={visibleActuel ? "text" : "password"}
-                value={actuelPassword}
-                onChange={(e) => setActuelPassword(e.target.value)}
+            <Input
+                name="currentPassword"
+                type={visibleCurrent ? "text" : "password"}
                 placeholder="Mot de passe actuel"
-                className="pr-10"
-                required
-              />
-              <button
+            />
+            <button
                 type="button"
-                onClick={() => setVisibleActuel(!visibleActuel)}
-                className="absolute right-3 top-1/2 -translate-y-1/20 p-1 bg-transparent text-gray-500"
-              >
-                {visibleActuel ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+                onClick={() => setVisibleCurrent(!visibleCurrent)}
+                className="absolute inset-y-0 right-2 flex items-center p-1 bg-transparent text-gray-500"
+            >
+                {visibleCurrent ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
             </div>
 
-            {/* Nouveau mot de passe */}
+        
             <div className="relative">
-              <label className="block mb-1 font-medium text-black">
-                Nouveau mot de passe
-              </label>
-              <Input
+            <Input
+                name="newPassword"
                 type={visibleNew ? "text" : "password"}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Nouveau mot de passe"
-                className="pr-10"
-                required
-              />
-              <button
+            />
+            <button
                 type="button"
                 onClick={() => setVisibleNew(!visibleNew)}
-                className="absolute right-3 top-1/2 -translate-y-1/20 p-1 bg-transparent text-gray-500"
-              >
+                className="absolute inset-y-0 right-2 flex items-center p-1 bg-transparent text-gray-500"
+            >
                 {visibleNew ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+            </button>
             </div>
 
-            {/* Confirmer le mot de passe */}
+        
             <div className="relative">
-              <label className="block mb-1 font-medium text-black">
-                Confirmer le mot de passe
-              </label>
-              <Input
+            <Input
+                name="confirmPassword"
                 type={visibleConfirm ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirmer le mot de passe"
-                className="pr-10"
-                required
-              />
-              <button
+            />
+            <button
                 type="button"
                 onClick={() => setVisibleConfirm(!visibleConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/20 p-1 bg-transparent text-gray-500"
-              >
+                className="absolute inset-y-0 right-2 flex items-center p-1 bg-transparent text-gray-500"
+            >
                 {visibleConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+            </button>
             </div>
 
-            {/* Bouton */}
-            <Button
-              type="submit"
-              className="bg-[#160b7c] hover:bg-[#0f0a66] text-white w-full transition"
-            >
-              Changer le mot de passe
-            </Button>
+            {error && <p className="text-red-500 text-center">{error}</p>}
+            {message && <p className="text-green-600 text-center">{message}</p>}
 
-            {/* Messages */}
-            {message && (
-              <p className="text-green-600 text-center mt-2">{message}</p>
-            )}
-            {error && <p className="text-red-600 text-center mt-2">{error}</p>}
-          </form>
+            <Button
+            type="submit"
+            disabled={pending}
+            className="bg-[#160b7c] text-white w-full"
+            >
+            {pending ? "En cours..." : "Changer le mot de passe"}
+            </Button>
+        </form>
         </div>
-      </main>
-    </div>
-  );
-}
+    );
+    }

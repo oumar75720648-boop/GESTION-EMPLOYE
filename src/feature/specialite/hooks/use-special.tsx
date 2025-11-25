@@ -20,12 +20,14 @@ export const useSpecialites = () => {
     defaultValues: { nomSpecialite: "", idDepartement: 0 },
   });
 
+  // Récupérer les spécialités depuis l'API
   const fetchSpecialites = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await specialiteService.getSpecialites();
       setSpecialites(data);
-    } catch (err) {
+    } catch {
       setError("Impossible de récupérer les spécialités");
     } finally {
       setLoading(false);
@@ -36,15 +38,16 @@ export const useSpecialites = () => {
     fetchSpecialites();
   }, []);
 
+  // Création ou modification d'une spécialité
   const handleSubmit = async (data: SpecialiteDto) => {
     setLoading(true);
+    setError(null);
     try {
       if (editId !== null) {
-        // ici tu peux ajouter la modification via API si nécessaire
-        {/* chat gtp */}
+        // Mise à jour locale (tu peux ajouter la mise à jour via API ici)
         setSpecialites((prev) =>
           prev.map((s) =>
-            s.id === editId
+            s.idSpecialite === editId
               ? {
                   ...s,
                   nomSpecialite: data.nomSpecialite,
@@ -59,20 +62,21 @@ export const useSpecialites = () => {
           data.nomSpecialite,
           data.idDepartement
         );
-        setSpecialites([...specialites, newSpec]);
+        setSpecialites((prev) => [...prev, newSpec]);
       }
       form.reset();
-    } catch (err) {
-      setError("Erreur lors de la création/modification de la spécialité");
+    } catch {
+      setError("Erreur lors de la création ou modification de la spécialité");
     } finally {
       setLoading(false);
     }
   };
 
+  // Préparer le formulaire pour la modification
   const handleEdit = (spec: Specialite) => {
     form.setValue("nomSpecialite", spec.nomSpecialite);
     form.setValue("idDepartement", spec.idDepartement);
-    setEditId(spec.id);
+    setEditId(spec.idSpecialite);
   };
 
   return {

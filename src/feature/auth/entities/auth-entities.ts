@@ -4,8 +4,10 @@ export interface AuthRequest {
 }
 
 export interface AfterConnect {
+  message: string;
   token: string;
   user: User;
+  
 }
 
 export interface User {

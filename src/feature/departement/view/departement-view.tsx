@@ -32,7 +32,6 @@ export default function ListeDepartements() {
 
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* Tableau des départements */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow rounded-md divide-y divide-gray-200">
           <thead className="bg-[#160b7c] text-white">
@@ -50,7 +49,7 @@ export default function ListeDepartements() {
               </tr>
             ) : (
               departements.map((dept, index) => (
-                <tr key={dept.id} className="hover:bg-gray-50">
+                <tr key={dept.id ?? index} className="hover:bg-gray-50">
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{dept.nomDepartement}</td>
                 </tr>

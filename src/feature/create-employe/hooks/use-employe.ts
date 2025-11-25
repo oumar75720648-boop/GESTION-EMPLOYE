@@ -1,51 +1,32 @@
-"use client";
-
 import { useState } from "react";
-import { CreateEmployePayload } from "../entites/employe-end";
-import { createEmploye, getEmployes } from "../service/create";
+import { employeService } from "../service/create";
+import { EmployeFormData } from "../entites/employe-end";
+import type { AxiosError } from "axios";
 
-export function useEmploye() {
+export const useEmploye = () => {
   const [pending, setPending] = useState(false);
-  const [employes, setEmployes] = useState<any[]>([]); // stocke la liste des employés
+  const [error, setError] = useState<string | null>(null);
 
-  // Création d'un employé (POST)
-  async function action(data: any) {
+  const action = async (data: EmployeFormData) => {
+    setPending(true);
+    setError(null);
+
     try {
-      setPending(true);
-
-      const payload: CreateEmployePayload = {
-        nom: data.nom,
-        prenom: data.prenom,
-        contact: data.contact,
-        email: data.email,
-        motDePasse: data.motDePasse,
-        departementId: Number(data.departementId) || 0,
-        specialiteId: Number(data.specialiteId) || 0,
-        typeUtilisateurId: Number(data.typeUtilisateurId),
-      };
-
-      const res = await createEmploye(payload);
-      alert(`Employé ${res.nom} créé avec succès !`);
-
-      // Mettre à jour la liste après création
-      await loadEmployes();
-    } catch (error) {
-      console.error("Erreur création employé :", error);
-      alert("Erreur lors de la création");
+      const response = await employeService.createEmploye(data);
+      alert("Employé créé avec succès !");
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      const axiosError = err as AxiosError<any>;
+      const message =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        "Erreur lors de la création de l'employé";
+      setError(message);
     } finally {
       setPending(false);
     }
-  }
+  };
 
-  // Récupérer tous les employés (GET)
-  async function loadEmployes() {
-    try {
-      const data = await getEmployes();
-      setEmployes(data);
-    } catch (error) {
-      console.error("Erreur récupération employés :", error);
-    }
-  }
-
-  return { action, pending, employes, loadEmployes };
-}
+  return { action, pending, error };
+};

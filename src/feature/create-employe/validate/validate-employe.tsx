@@ -7,7 +7,6 @@ export const authSchema = z.object({
   email: z.string().email({ message: "Email invalide" }),
   motDePasse: z.string().min(6, { message: "Au moins 6 caractères" }),
 
-  // 🔥 Transforme automatiquement en number
   departementId: z
     .string()
     .min(1, { message: "Département requis" })

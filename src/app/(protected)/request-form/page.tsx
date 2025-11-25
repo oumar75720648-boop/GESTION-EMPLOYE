@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import ListeDemandes from "@/feature/demande/view/liste";
-import FormulaireDemande from "@/feature/employe/formulaire";
+import FormulaireDemande from "@/feature/demande/view/formulaire";
 import AppSidebarAdmin from "@/components/dashboard/app-sidebaradmin";
 
 export default function Page() {

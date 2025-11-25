@@ -1,5 +1,4 @@
-import { NouvelleDemande } from "@/feature/employe/ajoutdmd";
-
+import FormulaireDemande from "@/feature/demande/view/formulaire";
 export default function Page() {
-  return <NouvelleDemande />;
+  return <FormulaireDemande />;
 }

@@ -2,10 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 
 export default function DemandeListe() {
-  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center p-6 bg-gray-50 min-h-screen w-full">

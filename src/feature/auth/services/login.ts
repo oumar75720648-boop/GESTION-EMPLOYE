@@ -1,5 +1,6 @@
 import apiClients from "@/lib/api/axios";
 import { AfterConnect, AuthRequest } from "../entities/auth-entities";
+import { ChangePasswordData } from "../entities/change-pass";
 
 export async function authenticationWithEmail(data: AuthRequest) {
   const response = await apiClients.post("/auth/login", data);
@@ -25,23 +26,16 @@ export async function logout(data: AuthRequest) {
 }
 
 
-
-export async function authenticationChangePassword(data: ChangePasswordSchema) {
-  try {
-    const response = await apiClients.post("/users/me/password/change", data);
-
-    return response.data as { message: string; accessToken?: string };
-  } catch (error: any) {
-    throw new Error(
-      error?.response?.data?.message ||
-        "Erreur lors du changement de mot de passe"
-    );
-  }
+export async function changePasswordService(data: ChangePasswordData) {
+  const response = await apiClients.post("/auth/change-password", data);
+  return response.data;
 }
-  
+
+
+
 export const authService = {
   authenticationWithEmail,
   logout,
   getUserInFo,
-  authenticationChangePassword,
+  changePasswordService,
 };

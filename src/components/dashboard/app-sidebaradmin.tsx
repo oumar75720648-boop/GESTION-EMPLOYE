@@ -13,19 +13,11 @@ import {
   IconMenu2,
   IconX,
 } from "@tabler/icons-react";
-import { useAuthStore } from "@/feature/auth/store/auth";
 
 export default function AppSidebarAdmin() {
   const router = useRouter();
   const pathname = usePathname();
-  const logout = useAuthStore((state) => state.logout);
   const [open, setOpen] = useState(false); // état pour mobile
-
-  const handleLogout = () => {
-    logout();
-    router.push("/auth");
-  };
-
   return (
     <>
       <button

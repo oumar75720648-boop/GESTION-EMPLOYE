@@ -1,3 +1,3 @@
 export const Config = {
-  BaseUrl: process.env.App_BaseUrl || "http://172.17.0.1:8080/",
+  BaseUrl: process.env.App_BaseUrl || "http://192.168.1.47:8080/",
 };

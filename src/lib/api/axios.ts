@@ -23,7 +23,6 @@ apiClients.interceptors.request.use((config: any) => {
   return config;
 });
 
-// Gérer les erreurs 401 (token manquant ou invalide)
 apiClients.interceptors.response.use(
   (response: any) => response,
   (error: any) => {
