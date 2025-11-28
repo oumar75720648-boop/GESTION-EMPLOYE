@@ -8,13 +8,11 @@ import { AfterConnect } from "@/feature/auth/entities/auth-entities";
 import { changePasswordService } from "@/feature/auth/services/login";
 
 export function Compte() {
-  const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
 
   const [user, setUser] = useState<AfterConnect | null>(null);
   const [date, setDate] = useState(today);
 
-  // Champs mot de passe
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -57,8 +55,12 @@ export function Compte() {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err: any) {
-      setError(err.message || "Erreur lors du changement de mot de passe");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Erreur lors du changement de mot de passe");
+      }
     } finally {
       setPending(false);
     }
@@ -70,17 +72,11 @@ export function Compte() {
         Profil utilisateur
       </h2>
       <div className="flex items-center gap-4 mb-6">
-        <img
-          src="/avatar.png"
-          alt="Avatar"
-          className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
-        />
         <div>
           <h3 className="text-xl font-semibold text-gray-900">
             {user?.nom} {user?.prenom}
           </h3>
           <p className="text-gray-500 mt-1 text-sm">Email : {user?.email}</p>
-         
         </div>
       </div>
 

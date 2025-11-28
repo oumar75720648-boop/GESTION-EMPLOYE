@@ -4,6 +4,7 @@ export interface AuthRequest {
 }
 
 export interface AfterConnect {
+  role: string;
   message: string;
   token: string;
   user: User;

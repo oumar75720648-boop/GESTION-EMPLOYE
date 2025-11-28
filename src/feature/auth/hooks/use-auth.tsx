@@ -24,7 +24,7 @@ export function useLoginForm() {
     },
   });
 
-const action = async (data: { email: string; motDePasse: string }) => {
+const action = async () => {
   try {
     setError(null);
     setFetching(true);

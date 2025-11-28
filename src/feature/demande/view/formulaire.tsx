@@ -1,174 +1,128 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ListeDemandes from "@/feature/demande/view/liste";
-import { useDepartements } from "@/feature/departement/hooks/use-depart";
 import { getUserInFo } from "@/feature/auth/services/login";
+import { createDemande } from "../service/demande-service";
+import { DemandePayload } from "../entities/demande-entites";
 
-export default function GestionDemandes() {
+export default function FormulaireDemandeSimple() {
   const today = new Date().toISOString().split("T")[0];
   const [type, setType] = useState("");
+  const [priorite, setPriorite] = useState("Normale");
   const [date, setDate] = useState(today);
-  const [departement, setDepartement] = useState("");
-  const [priorite, setPriorite] = useState("");
-  const [details, setDetails] = useState("");
-  const [demandes, setDemandes] = useState<any[]>([]);
+  const [description, setDescription] = useState("");
   const [user, setUser] = useState<any | null>(null);
-
-  const { departements } = useDepartements();
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
     async function fetchUser() {
-      try {
-        const data = await getUserInFo();
-        setUser(data);
-      } catch (error) {
-        console.error("Erreur récupération utilisateur:", error);
-      }
+      const data = await getUserInFo();
+      setUser(data);
     }
     fetchUser();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!type || !date || !departement || !priorite || !user) {
-      alert("Veuillez remplir tous les champs obligatoires.");
-      return;
+    if (!type || !description || !user) {
+      return alert("Veuillez remplir tous les champs.");
     }
 
-    const nouvelleDemande = {
-      id: Date.now(),
-      nom: user.nom,
-      prenom: user.prenom,
-      email: user.email,
-      type,
-      date,
-      departement,
-      priorite,
-      details,
-      statut: "En attente",
+    const payload: Omit<DemandePayload, "id"> = {
+      typeDemande: type,
+      description,
+      statutDemande: "En attente",
+      prioriteDemande: priorite,
+      dateDemande: date + "T00:00:00",
+      utilisateurId: user.id,
     };
 
-    setDemandes([nouvelleDemande, ...demandes]);
-
-    setType("");
-    setDate(today);
-    setDepartement("");
-    setPriorite("");
-    setDetails("");
+    try {
+      setPending(true);
+      await createDemande(payload); // Appel direct au service
+      alert("Demande envoyée avec succès !");
+      // Reset du formulaire
+      setType("");
+      setPriorite("Normale");
+      setDate(today);
+      setDescription("");
+    } catch (err) {
+      console.error("Erreur lors de l'envoi :", err);
+      alert("Erreur lors de l'envoi de la demande.");
+    } finally {
+      setPending(false);
+    }
   };
 
-  if (!user) return <div>Chargement de l'utilisateur...</div>;
+  if (!user) return <div>Chargement utilisateur...</div>;
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <div className="flex-1 flex flex-col p-4 sm:p-6">
-        <h2 className="text-2xl font-bold text-[#160b7c] mb-6">
-          Créer une nouvelle demande
-        </h2>
-
-        <div className="bg-white p-6 rounded-md shadow-md w-full max-w-lg mb-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Type de demande */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Type de demande
-              </label>
-              <select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-[#160b7c]"
-                required
-              >
-                <option value="">-- Sélectionnez un type --</option>
-                <option>Demande de congé</option>
-                <option>Demande d’autorisation d’absence</option>
-                <option>Demande de matériel</option>
-                <option>Demande de réparation / maintenance</option>
-                <option>Demande de formation</option>
-                <option>Demande de remboursement de frais</option>
-                <option>Demande d’accès à un outil</option>
-                <option>Autre demande administrative</option>
-              </select>
-            </div>
-
-            {/* Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date de la demande
-              </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-[#160b7c]"
-                required
-              />
-            </div>
-
-            {/* Département */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Département concerné
-              </label>
-              <select
-                value={departement}
-                onChange={(e) => setDepartement(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-[#160b7c]"
-                required
-              >
-                <option value="">-- Sélectionnez un département --</option>
-                {departements.map((dep: any) => (
-                  <option key={dep.id} value={dep.nomDepartement}>
-                    {dep.nomDepartement}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Priorité */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Priorité
-              </label>
-              <select
-                value={priorite}
-                onChange={(e) => setPriorite(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-[#160b7c]"
-                required
-              >
-                <option value="">-- Choisissez la priorité --</option>
-                <option>Urgent</option>
-                <option>Normal</option>
-              </select>
-            </div>
-
-            {/* Détails */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Plus de détails
-              </label>
-              <textarea
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
-                placeholder="Expliquez votre demande en détail..."
-                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-[#160b7c]"
-                rows={4}
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="bg-[#160b7c] text-white px-5 py-2 rounded-md w-full hover:bg-blue-900 transition-all"
-            >
-              Envoyer la demande
-            </button>
-          </form>
+    <div className="flex flex-col p-4 max-w-lg mx-auto bg-white rounded-md shadow-md space-y-4">
+      <h2 className="text-2xl font-bold text-[#160b7c] text-center">
+        Nouvelle demande
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div>
+          <label className="block mb-1 font-medium">Type de demande</label>
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full border p-2 rounded-md"
+            required
+          >
+            <option value="">-- Sélectionnez un type --</option>
+            <option>Congé annuel</option>
+            <option>Autorisation d’absence</option>
+            <option>Matériel</option>
+            <option>Réparation / maintenance</option>
+            <option>Formation</option>
+            <option>Remboursement frais</option>
+            <option>Accès outil</option>
+            <option>Autre</option>
+          </select>
         </div>
 
-        <ListeDemandes demandes={demandes} />
-      </div>
+        <div>
+          <label className="block mb-1 font-medium">Priorité</label>
+          <select
+            value={priorite}
+            onChange={(e) => setPriorite(e.target.value)}
+            className="w-full border p-2 rounded-md"
+          >
+            <option>Normale</option>
+            <option>Urgente</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Date</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full border p-2 rounded-md"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border p-2 rounded-md"
+            rows={4}
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={pending}
+          className="w-full px-4 py-2 rounded-md text-white bg-[#160b7c] hover:bg-blue-900"
+        >
+          {pending ? "Envoi..." : "Envoyer la demande"}
+        </button>
+      </form>
     </div>
   );
 }

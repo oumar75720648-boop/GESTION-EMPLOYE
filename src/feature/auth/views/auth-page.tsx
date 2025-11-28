@@ -26,15 +26,16 @@ export function Connexion() {
     action,
   } = useLoginForm();
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("accessToken")) {
-      router.push("/");
-    }
-  }, []);
+useEffect(() => {
+  if (typeof window !== "undefined" && localStorage.getItem("accessToken")) {
+    router.push("/");
+  }
+}, []);
 
-  const Error = (err: any) => {
-    console.log("Erreur de connexion", err);
-  };
+const Error = (err: unknown) => {
+  console.log("Erreur de connexion", err);
+};
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">

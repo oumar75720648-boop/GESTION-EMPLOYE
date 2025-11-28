@@ -9,16 +9,16 @@ export const metadata: Metadata = {
   description: "Premier appli",
 };
 
-export default function RootLayout({ 
-  children 
-}: Readonly<{children: React.ReactNode}>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-      <html lang="fr">
-        <body className="">
-           <Provider>
-            <Layout>{children}</Layout>
-          </Provider>
-        </body>
-      </html>
-    );
+    <html lang="fr">
+      <body className="">
+        <Provider>
+          <Layout>{children}</Layout>
+        </Provider>
+      </body>
+    </html>
+  );
 }

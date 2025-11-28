@@ -21,7 +21,7 @@ export default function AjouterEmploye() {
       motDePasse: "",
       departementId: null,
       specialiteId: null,
-      typeUtilisateurId: null,
+      typeUtilisateurId: null, // bien en number | null
     },
   });
 
@@ -145,9 +145,8 @@ export default function AjouterEmploye() {
             required
           >
             <option value="">-- Sélectionnez un type --</option>
-            <option value={1}>Administrateur</option>
-            <option value={2}>Employé</option>
-    
+            <option value={2}>Administrateur</option>
+            <option value={3}>Employé</option>
           </select>
         </div>
 

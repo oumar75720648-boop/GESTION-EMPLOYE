@@ -41,7 +41,6 @@ export const useDepartements = () => {
   // Création uniquement
   const handleSubmit = async (data: DepartementDto) => {
     setLoading(true);
-    const now = new Date().toISOString();
 
     try {
       const newDept = await departementService.createDepartement(

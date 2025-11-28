@@ -1,13 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "@/feature/employe/header";
+import { useDemande } from "../hooks/use-demande";
+import { getUserInFo } from "@/feature/auth/services/login";
 
-interface ListeDemandesProps {
-  demandes: any[];
-}
+export default function ListeDemandes() {
+  const { demandes, loading } = useDemande();
+  const [user, setUser] = useState<any | null>(null);
 
-export default function ListeDemandes({ demandes }: ListeDemandesProps) {
+  useEffect(() => {
+    async function fetchUser() {
+      const data = await getUserInFo();
+      setUser(data);
+    }
+    fetchUser();
+  }, []);
+
+  if (!user) return <div>Chargement utilisateur...</div>;
+
+  // Filtrage simple des demandes selon le type d'utilisateur
+  const filteredDemandes =
+    user.typeUtilisateur === "EMPLOYE"
+      ? demandes.filter((d) => d.utilisateur?.id === user.id)
+      : demandes;
+
+  if (loading) return <div>Chargement des demandes...</div>;
+
   return (
     <div className="flex-1 flex flex-col">
       <PageHeader />
@@ -31,42 +50,47 @@ export default function ListeDemandes({ demandes }: ListeDemandesProps) {
                   Email
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                  Type de Demande
+                  Type
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                  Priorité
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
                   Date
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                  Statut
                 </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-200">
-              {demandes.length === 0 ? (
+              {filteredDemandes.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-4">
-                    Aucune demande
+                  <td
+                    colSpan={6}
+                    className="px-4 py-2 text-center text-gray-500"
+                  >
+                    Aucune demande disponible
                   </td>
                 </tr>
               ) : (
-                demandes.map((d) => (
-                  <tr key={d.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-sm text-gray-800">{d.nom}</td>
+                filteredDemandes.map((d) => (
+                  <tr key={d.idDemande} className="hover:bg-gray-50">
                     <td className="px-4 py-2 text-sm text-gray-800">
-                      {d.prenom}
+                      {d.utilisateur?.nom || "-"}
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-800">
-                      {d.email}
+                      {d.utilisateur?.prenom || "-"}
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-800">
-                      {d.type}
+                      {d.utilisateur?.email || "-"}
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-800">
-                      {d.date}
+                      {d.typeDemande || "-"}
                     </td>
                     <td className="px-4 py-2 text-sm text-gray-800">
-                      {d.statut}
+                      {d.prioriteDemande || "-"}
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-800">
+                      {new Date(d.dateDemande).toLocaleDateString()}
                     </td>
                   </tr>
                 ))
