@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { getUserInFo } from "@/feature/auth/services/login";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getUserInFo,
+  changePasswordService,
+} from "@/feature/auth/services/login";
 import { AfterConnect } from "@/feature/auth/entities/auth-entities";
-import { changePasswordService } from "@/feature/auth/services/login";
 
 export function Compte() {
   const today = new Date().toISOString().split("T")[0];
 
-  const [user, setUser] = useState<AfterConnect | null>(null);
   const [date, setDate] = useState(today);
-
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,20 +20,15 @@ export function Compte() {
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 
-  useEffect(() => {
-    async function loadUser() {
-      try {
-        const data = await getUserInFo();
-        setUser(data);
-      } catch (error) {
-        console.error("Erreur chargement utilisateur :", error);
-      }
-    }
-    loadUser();
-  }, []);
+  // Récupération infos utilisateur via React Query
+  const { data: user, isLoading } = useQuery<AfterConnect>({
+    queryKey: ["userMe"],
+    queryFn: getUserInFo,
+  });
 
   const handleChangePassword = async () => {
     if (!user) return;
+
     setError("");
     setMessage("");
 
@@ -51,26 +46,25 @@ export function Compte() {
         oldPassword,
         newPassword,
       });
+
       setMessage("Mot de passe changé avec succès !");
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Erreur lors du changement de mot de passe");
-      }
+    } catch (err: any) {
+      setError(err.message || "Erreur lors du changement de mot de passe");
     } finally {
       setPending(false);
     }
   };
+
 
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6 mt-20">
       <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
         Profil utilisateur
       </h2>
+
       <div className="flex items-center gap-4 mb-6">
         <div>
           <h3 className="text-xl font-semibold text-gray-900">
@@ -97,7 +91,6 @@ export function Compte() {
         </div>
       </div>
 
-      {/* Champs mot de passe */}
       <div className="flex flex-col gap-4 mb-4">
         <input
           type="password"

@@ -1,5 +1,5 @@
 import apiClients from "@/lib/api/axios";
-import { AfterConnect, AuthRequest } from "../entities/auth-entities";
+import { AfterConnect, AuthRequest, User } from "../entities/auth-entities";
 import { ChangePasswordData } from "../entities/change-pass";
 
 export async function authenticationWithEmail(data: AuthRequest) {
@@ -9,7 +9,7 @@ export async function authenticationWithEmail(data: AuthRequest) {
 
 export async function getUserInFo() {
   const response = await apiClients.get(`/auth/me/`);
-  return response.data as AfterConnect;
+  return response.data as User;
 }
 
 export async function logout(data: AuthRequest) {

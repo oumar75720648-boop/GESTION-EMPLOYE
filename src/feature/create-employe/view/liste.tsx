@@ -34,7 +34,6 @@ export default function ListeEmployes() {
     loadEmployes();
   }, []);
 
-  if (loading) return <p className="text-center mt-10">Chargement...</p>;
 
   return (
     <div className="flex flex-col items-center justify-start min-h-[70vh] w-full p-6 bg-gray-50">

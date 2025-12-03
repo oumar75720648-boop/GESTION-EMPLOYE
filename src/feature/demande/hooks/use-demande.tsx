@@ -1,39 +1,31 @@
 import { useState, useEffect } from "react";
-import { fetchDemandes, createDemande } from "../service/demande-service";
-import { DemandePayload } from "../entities/demande-entites";
+import { createObservation, fetchObservations } from "@/feature/observation/service/obserr";
+import { Observation, ObservationPayload } from "@/feature/observation/entites/obser";
 
-export function useDemande() {
-  const [demandes, setDemandes] = useState<DemandePayload[]>([]);
+export function useObservations(demandeId: number) {
+  const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(false);
-  const [pending, setPending] = useState(false);
 
-  useEffect(() => {
-    loadDemandes();
-  }, []);
-
-  const loadDemandes = async () => {
+  const loadObservations = async () => {
     setLoading(true);
     try {
-      const data = await fetchDemandes();
-      setDemandes(data);
+      const data = await fetchObservations(demandeId);
+      setObservations(data);
     } catch (err) {
-      console.error(err);
+      console.error("Erreur fetchObservations:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const action = async (demande: Omit<DemandePayload, "id">) => {
-    setPending(true);
-    try {
-      const newDemande = await createDemande(demande);
-      setDemandes([newDemande, ...demandes]);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setPending(false);
-    }
+  const addObservation = async (obs: ObservationPayload) => {
+    await createObservation(obs);
+    await loadObservations(); // recharger après ajout
   };
 
-  return { demandes, loading, pending, action };
+  useEffect(() => {
+    if (demandeId) loadObservations();
+  }, [demandeId]);
+
+  return { observations, addObservation, loading };
 }

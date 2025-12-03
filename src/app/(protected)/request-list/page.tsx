@@ -1,4 +1,4 @@
-import ListeDemande from "@/feature/admin/listedmd/listedmd";
+import ListeDemande from "@/feature/demande/view/listedmd";
 export default function Page() {
   return <ListeDemande />;
 }

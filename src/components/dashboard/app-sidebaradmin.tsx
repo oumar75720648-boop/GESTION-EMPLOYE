@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   IconHome,
   IconUsers,
@@ -13,29 +13,22 @@ import {
   IconMenu2,
   IconX,
 } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import { getUserInFo } from "@/feature/auth/services/login";
+import { User } from "@/feature/auth/entities/auth-entities";
 
 export default function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<any | null>(null);
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const data = await getUserInFo();
-        setUser(data);
-      } catch (error) {
-        console.error("Erreur récupération utilisateur:", error);
-      }
-    }
-    fetchUser();
-  }, []);
+  const { data: userMe = {} as User, isFetching } = useQuery({
+    queryKey: ["userMe"],
+    queryFn: () => getUserInFo(),
+  });
 
   return (
     <>
-      
       <button
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#0a043c] text-white rounded-md shadow-lg"
         onClick={() => setOpen(true)}
@@ -43,7 +36,6 @@ export default function AppSidebar() {
         <IconMenu2 size={24} />
       </button>
 
-     
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
@@ -51,7 +43,6 @@ export default function AppSidebar() {
         onClick={() => setOpen(false)}
       />
 
-      
       <aside
         className={`fixed top-0 left-0 bg-[#0a043c] text-white flex flex-col p-5 min-h-screen shadow-xl w-[260px] z-50 transform transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
@@ -74,8 +65,7 @@ export default function AppSidebar() {
           Menu
         </h2>
 
-        
-        {user?.role === "ADMIN" && (
+        {!isFetching && userMe.role === "ADMIN" && (
           <>
             <button
               onClick={() => {
@@ -101,7 +91,7 @@ export default function AppSidebar() {
 
             <button
               onClick={() => {
-                router.push("/demande-admin");
+                router.push("/demande-lists");
                 setOpen(false);
               }}
               className="flex items-center gap-3 py-2 px-3 mt-3 rounded-md hover:bg-indigo-600 transition"
@@ -131,7 +121,7 @@ export default function AppSidebar() {
           </>
         )}
 
-        {user?.role === "EMPLOYE" && (
+        {!isFetching && userMe.role === "EMPLOYE" && (
           <>
             <button
               onClick={() => {

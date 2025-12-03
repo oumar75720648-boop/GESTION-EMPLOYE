@@ -22,7 +22,6 @@ export default function SpecialiteView() {
     defaultValues: { nomSpecialite: "", idDepartement: "0" },
   });
 
-  // Charger les spécialités au montage
   useEffect(() => {
     async function loadSpecialites() {
       setLoading(true);
