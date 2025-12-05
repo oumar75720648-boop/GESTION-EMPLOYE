@@ -1,39 +1,52 @@
 import { useState, useEffect } from "react";
-import { fetchObservations } from "../service/obserr";
-import { Observation } from "../entites/obser";
+import { fetchObservations, createObservation } from "../service/obserr";
+import { Observation, ObservationPayload } from "../entites/obser";
 
-export function useObservations(demandeId: number) {
+export function useObservations(demandeId?: number) {
   const [observations, setObservations] = useState<Observation[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Charge automatiquement les observations à l'initial ou quand demandeId change
   useEffect(() => {
-    if (!demandeId) return;
-    let isMounted = true;
-
-    const loadObservations = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await fetchObservations(demandeId);
-        if (isMounted) setObservations(data);
-      } catch (err) {
-        if (isMounted)
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Erreur lors du chargement des observations"
-          );
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    loadObservations();
-    return () => {
-      isMounted = false;
-    };
+    load();
   }, [demandeId]);
 
-  return { observations, loading, error };
+  // Fonction pour charger les observations
+  async function load() {
+    try {
+      setLoading(true);
+      const data = await fetchObservations(demandeId);
+      setObservations(data || []); // s'assure que c'est un tableau
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Erreur lors du chargement");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Fonction pour ajouter une observation et recharger automatiquement
+  async function addObservation(payload: ObservationPayload) {
+    try {
+      setLoading(true);
+      await createObservation(payload);
+      await load(); // recharge après ajout
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Erreur lors de l'envoi");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return {
+    observations,
+    loading,
+    error,
+    reload: load,
+    addObservation,
+  };
 }

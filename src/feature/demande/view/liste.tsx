@@ -4,25 +4,39 @@ import { useState, useEffect } from "react";
 import PageHeader from "@/feature/employe/header";
 import { getUserInFo } from "@/feature/auth/services/login";
 import { fetchDemandes } from "@/feature/demande/service/demande-service";
+import { fetchObservations } from "@/feature/observation/service/obserr";
 
 export default function ListeDemandes() {
   const [user, setUser] = useState<any>(null);
   const [demandes, setDemandes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Charge l'utilisateur et ses demandes
   useEffect(() => {
-    getUserInFo().then((u) => {
+    const init = async () => {
+      const u = await getUserInFo();
       setUser(u);
-      setLoading(false);
-    });
-  }, []);
 
-  useEffect(() => {
-    if (!user) return;
-    fetchDemandes().then((all) =>
-      setDemandes(all.filter((d) => d.utilisateur?.id === user.id))
-    );
-  }, [user]);
+      if (!u) return;
+
+      const allDemandes = await fetchDemandes();
+      const userDemandes = allDemandes.filter(
+        (d) => d.utilisateur?.id === u.id
+      );
+
+      const allObs = await fetchObservations();
+      const demandesAvecObs = userDemandes.map((d) => ({
+        ...d,
+        lastObservation:
+          allObs.filter((o) => o.demandeId === d.idDemande).pop() || null,
+      }));
+
+      setDemandes(demandesAvecObs);
+      setLoading(false);
+    };
+
+    init();
+  }, []);
 
   if (loading)
     return <p className="text-center mt-10 text-gray-600">Chargement...</p>;
@@ -56,23 +70,40 @@ export default function ListeDemandes() {
                   </td>
                 </tr>
               ) : (
-                demandes.map((d) => (
-                  <tr key={d.idDemande} className="hover:bg-gray-50">
-                    <td className="px-4 py-2">{d.typeDemande || "-"}</td>
-                    <td className="px-4 py-2">{d.prioriteDemande || "-"}</td>
-                    <td className="px-4 py-2">
-                      {d.statutDemande || "En attente"}
-                    </td>
-                    <td className="px-4 py-2">
-                      {d.observation?.conces || "-"}
-                    </td>
-                    <td className="px-4 py-2">
-                      {d.dateDemande
-                        ? new Date(d.dateDemande).toLocaleDateString()
-                        : "-"}
-                    </td>
-                  </tr>
-                ))
+                demandes.map((d) => {
+                  const obs = d.lastObservation;
+                  return (
+                    <tr key={d.idDemande} className="hover:bg-gray-50">
+                      <td className="px-4 py-2">{d.typeDemande || "-"}</td>
+                      <td className="px-4 py-2">{d.prioriteDemande || "-"}</td>
+                      <td className="px-4 py-2 font-semibold">
+                        {obs?.statut === "ACCEPTEE" ? (
+                          <span className="text-green-600">Acceptée</span>
+                        ) : obs?.statut === "REFUSEE" ? (
+                          <span className="text-red-600">Refusée</span>
+                        ) : (
+                          <span className="text-gray-500">En attente</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2">
+                        {obs ? (
+                          <span className="text-gray-600">
+                            {obs.statut === "ACCEPTEE"
+                              ? "Demande acceptée"
+                              : "Demande refusée"}
+                          </span>
+                        ) : (
+                          <span className="text-gray-500">En attente</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2">
+                        {d.dateDemande
+                          ? new Date(d.dateDemande).toLocaleDateString()
+                          : "-"}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
