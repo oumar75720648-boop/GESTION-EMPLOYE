@@ -1,8 +1,8 @@
 export interface DemandePayload {
   observation: any;
-  idDemande: Key | null | undefined;
+  idDemande: null | undefined;
   utilisateur: any;
-  id?: number; // optionnel pour le POST
+  id?: number; 
   typeDemande: string;
   description: string;
   statutDemande: string;

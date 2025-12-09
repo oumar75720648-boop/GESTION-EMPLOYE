@@ -11,7 +11,14 @@ export async function createDepartement(nomDepartement: string) {
   return response.data as Departement;
 }
 
+export async function deleteDepartement(idDepartement: number) {
+  const response = await apiClients.delete(`/departements/${idDepartement}`);
+  return response.data;
+}
+
+
 export const departementService = {
   createDepartement,
   getDepartements,
+  deleteDepartement
 };

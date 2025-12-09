@@ -39,9 +39,9 @@ export default function FormulaireDemandeSimple() {
 
     try {
       setPending(true);
-      await createDemande(payload); // Appel direct au service
+      await createDemande(payload);
       alert("Demande envoyée avec succès !");
-      // Reset du formulaire
+
       setType("");
       setPriorite("Normale");
       setDate(today);
@@ -53,8 +53,6 @@ export default function FormulaireDemandeSimple() {
       setPending(false);
     }
   };
-
-  if (!user) return <div>Chargement utilisateur...</div>;
 
   return (
     <div className="flex flex-col p-4 max-w-lg mx-auto bg-white rounded-md shadow-md space-y-4">
@@ -79,6 +77,13 @@ export default function FormulaireDemandeSimple() {
             <option>Remboursement frais</option>
             <option>Accès outil</option>
             <option>Autre</option>
+            <option>Changement de poste</option>
+            <option>Demande de télétravail</option>
+            <option>Demande de véhicule de fonction</option>
+            <option>Demande de badge / accès bâtiment</option>
+            <option>Demande de prime ou bonus</option>
+            <option>Demande d’hébergement ou voyage</option>
+            <option>Demande de matériel informatique spécifique</option>
           </select>
         </div>
 

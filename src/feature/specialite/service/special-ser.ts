@@ -17,7 +17,13 @@ export async function createSpecialite(
   return response.data as Specialite;
 }
 
+export async function deleteSpecialite(idSpecialite : number){
+  const reponse = await apiClients.delete(`/specialites/${idSpecialite}`)
+return reponse.data ;
+}
+
 export const specialiteService = {
   getSpecialites,
   createSpecialite,
+  deleteSpecialite,
 };

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { Eye, EyeOff } from "lucide-react";
 import {
   getUserInFo,
   changePasswordService,
@@ -20,8 +21,11 @@ export function Compte() {
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 
-  // Récupération infos utilisateur via React Query
-  const { data: user, isLoading } = useQuery<AfterConnect>({
+  const [showOld, setShowOld] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const { data: user } = useQuery<AfterConnect>({
     queryKey: ["userMe"],
     queryFn: getUserInFo,
   });
@@ -51,13 +55,11 @@ export function Compte() {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err: any) {
-      setError(err.message || "Erreur lors du changement de mot de passe");
+    } catch (err: unknown) {
     } finally {
       setPending(false);
     }
   };
-
 
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6 mt-20">
@@ -92,27 +94,59 @@ export function Compte() {
       </div>
 
       <div className="flex flex-col gap-4 mb-4">
-        <input
-          type="password"
-          placeholder="Mot de passe actuel"
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2"
-        />
-        <input
-          type="password"
-          placeholder="Nouveau mot de passe"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2"
-        />
-        <input
-          type="password"
-          placeholder="Confirmer le nouveau mot de passe"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2"
-        />
+        {/* Mot de passe actuel */}
+        <div className="relative">
+          <input
+            type={showOld ? "text" : "password"}
+            placeholder="Mot de passe actuel"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 w-full"
+          />
+          <button
+            type="button"
+            onClick={() => setShowOld(!showOld)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+          >
+            {showOld ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+
+        {/* Nouveau mot de passe */}
+        <div className="relative">
+          <input
+            type={showNew ? "text" : "password"}
+            placeholder="Nouveau mot de passe"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 w-full"
+          />
+          <button
+            type="button"
+            onClick={() => setShowNew(!showNew)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+          >
+            {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+
+        {/* Confirmer nouveau mot de passe */}
+        <div className="relative">
+          <input
+            type={showConfirm ? "text" : "password"}
+            placeholder="Confirmer le nouveau mot de passe"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 w-full"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirm(!showConfirm)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+          >
+            {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
       </div>
 
       {error && <p className="text-red-600 mb-2">{error}</p>}

@@ -1,5 +1,5 @@
 export interface Departement {
-  idDepartement: Key | null | undefined;
+  idDepartement: null | undefined;
   id: number;
   nomDepartement: string;
   createAt: string;

@@ -12,7 +12,6 @@ import { departementService } from "@/feature/departement/service/departement-se
 
 export const useDepartements = () => {
   const [departements, setDepartements] = useState<Departement[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<DepartementDto>({
@@ -25,10 +24,6 @@ export const useDepartements = () => {
     try {
       const data = await departementService.getDepartements();
       setDepartements(data);
-      setError(null);
-    } catch (err: any) {
-      console.error(err);
-      setError("Impossible de charger les départements.");
     } finally {
       setLoading(false);
     }
@@ -38,23 +33,22 @@ export const useDepartements = () => {
     fetchDepartements();
   }, [fetchDepartements]);
 
-  // Création uniquement
   const handleSubmit = async (data: DepartementDto) => {
     setLoading(true);
-
     try {
-      const newDept = await departementService.createDepartement(
-        data.nomDepartement
-      );
-
-      // On ajoute le département à la liste
-      setDepartements((prev) => [...prev, newDept]);
-
+      await departementService.createDepartement(data.nomDepartement);
       form.reset();
-      setError(null);
-    } catch (err: any) {
-      console.error(err);
-      setError("Erreur lors de l'enregistrement du département.");
+      await fetchDepartements(); // recharge la liste après création
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    setLoading(true);
+    try {
+      await departementService.deleteDepartement(id);
+      await fetchDepartements(); // recharge la liste après suppression
     } finally {
       setLoading(false);
     }
@@ -64,8 +58,7 @@ export const useDepartements = () => {
     departements,
     form,
     loading,
-    error,
     handleSubmit,
-    fetchDepartements,
+    handleDelete,
   };
 };

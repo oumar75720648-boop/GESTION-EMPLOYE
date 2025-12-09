@@ -22,10 +22,12 @@ export default function AppSidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const { data: userMe = {} as User, isFetching } = useQuery({
+  const { data: userMe = {} as User } = useQuery({
     queryKey: ["userMe"],
     queryFn: () => getUserInFo(),
   });
+
+  const role = userMe.role || ""; // role par défaut vide pour affichage immédiat
 
   return (
     <>
@@ -65,7 +67,7 @@ export default function AppSidebar() {
           Menu
         </h2>
 
-        {!isFetching && userMe.role === "ADMIN" && (
+        {role === "ADMIN" && (
           <>
             <button
               onClick={() => {
@@ -121,7 +123,7 @@ export default function AppSidebar() {
           </>
         )}
 
-        {!isFetching && userMe.role === "EMPLOYE" && (
+        {role === "EMPLOYE" && (
           <>
             <button
               onClick={() => {

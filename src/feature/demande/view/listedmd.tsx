@@ -25,8 +25,8 @@ export default function DemandesList() {
     setLoading(true);
     try {
       await createObservation({ demandeId, statut, conces: "" });
-      await load(); 
-      setSelectedDemande(null); 
+      await load();
+      setSelectedDemande(null);
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ export default function DemandesList() {
               <th className="px-4 py-2 text-center">Actions</th>
             </tr>
           </thead>
-
+          {/* chat*/}
           <tbody className="divide-y divide-gray-200">
             {demandes.length === 0 ? (
               <tr>

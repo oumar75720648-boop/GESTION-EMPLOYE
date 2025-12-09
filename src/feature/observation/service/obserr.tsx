@@ -1,5 +1,3 @@
-// src/feature/observation/service/observation-service.ts
-
 import apiClient from "@/lib/api/axios";
 import { Observation, ObservationPayload } from "../entites/obser";
 
@@ -23,9 +21,6 @@ export async function createObservation(
   return response.data;
 }
 
-/**
- * Récupère les observations (optionnel: filtrer par demandeId)
- */
 export async function fetchObservations(
   demandeId?: number
 ): Promise<Observation[]> {
@@ -35,11 +30,9 @@ export async function fetchObservations(
 
   const response = await apiClient.get(url);
 
-  // S'assurer que response.data est bien un tableau
   if (Array.isArray(response.data)) {
     return response.data;
   }
 
-  // Retourne un tableau vide si le format n'est pas celui attendu
   return [];
 }

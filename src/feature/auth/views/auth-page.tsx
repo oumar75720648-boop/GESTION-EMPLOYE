@@ -15,27 +15,37 @@ import { Eye, EyeOff } from "lucide-react";
 import { useLoginForm } from "../hooks/use-auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getUserInFo } from "../services/login";
+
 export function Connexion() {
-  const [visible, setVisible] = useState<boolean>(false);
+  const [visible, setVisible] = useState(false);
   const router = useRouter();
+
   const {
     handleSubmit,
     register,
     formState: { isSubmitted, errors },
     pending,
     action,
+    error,
   } = useLoginForm();
 
-useEffect(() => {
-  if (typeof window !== "undefined" && localStorage.getItem("accessToken")) {
-    router.push("/");
-  }
-}, []);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-const Error = (err: unknown) => {
-  console.log("Erreur de connexion", err);
-};
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
 
+    const fetchUserAndRedirect = async () => {
+      try {
+        const user = await getUserInFo();
+        if (!user) return;
+      } catch{
+      }
+    };
+
+    fetchUserAndRedirect();
+  }, [router]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
@@ -62,7 +72,7 @@ const Error = (err: unknown) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4" onSubmit={handleSubmit(action, Error)}>
+          <form className="space-y-4" onSubmit={handleSubmit(action)}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Adresse e-mail</FieldLabel>
@@ -78,10 +88,8 @@ const Error = (err: unknown) => {
                   </p>
                 )}
               </Field>
-
               <Field className="relative w-full">
                 <FieldLabel htmlFor="motDePasse">Mot de passe</FieldLabel>
-
                 <div className="relative w-full">
                   <Input
                     id="motDePasse"
@@ -98,7 +106,6 @@ const Error = (err: unknown) => {
                     {visible ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
-
                 {errors.motDePasse && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.motDePasse.message}
@@ -114,6 +121,10 @@ const Error = (err: unknown) => {
                 >
                   {pending || isSubmitted ? "Connexion..." : "Se connecter"}
                 </Button>
+
+                {error && (
+                  <p className="text-red-500 text-center mt-2">{error}</p>
+                )}
               </Field>
             </FieldGroup>
           </form>

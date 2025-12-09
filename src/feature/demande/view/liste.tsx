@@ -1,17 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import PageHeader from "@/feature/employe/header";
+import PageHeader from "@/feature/admin/employe/header";
 import { getUserInFo } from "@/feature/auth/services/login";
 import { fetchDemandes } from "@/feature/demande/service/demande-service";
 import { fetchObservations } from "@/feature/observation/service/obserr";
+import { User } from "@/feature/auth/entities/auth-entities";
+import { Observation } from "@/feature/observation/entites/obser";
+import { DemandePayload } from "@/feature/demande/entities/demande-entites";
 
 export default function ListeDemandes() {
-  const [user, setUser] = useState<any>(null);
-  const [demandes, setDemandes] = useState<any[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [demandes, setDemandes] = useState<DemandePayload[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDemande, setSelectedDemande] = useState<DemandePayload | null>(
+    null
+  );
 
-  // Charge l'utilisateur et ses demandes
   useEffect(() => {
     const init = async () => {
       const u = await getUserInFo();
@@ -21,14 +26,16 @@ export default function ListeDemandes() {
 
       const allDemandes = await fetchDemandes();
       const userDemandes = allDemandes.filter(
-        (d) => d.utilisateur?.id === u.id
+        (d: DemandePayload) => d.utilisateur?.id === u.id
       );
 
       const allObs = await fetchObservations();
-      const demandesAvecObs = userDemandes.map((d) => ({
+      const demandesAvecObs = userDemandes.map((d: DemandePayload) => ({
         ...d,
         lastObservation:
-          allObs.filter((o) => o.demandeId === d.idDemande).pop() || null,
+          allObs
+            .filter((o: Observation) => o.demandeId === d.idDemande)
+            .pop() || null,
       }));
 
       setDemandes(demandesAvecObs);
@@ -37,9 +44,6 @@ export default function ListeDemandes() {
 
     init();
   }, []);
-
-  if (loading)
-    return <p className="text-center mt-10 text-gray-600">Chargement...</p>;
 
   return (
     <div className="flex-1 flex flex-col">
@@ -57,13 +61,14 @@ export default function ListeDemandes() {
                 <th className="px-4 py-2 text-left">Statut</th>
                 <th className="px-4 py-2 text-left">Dernière observation</th>
                 <th className="px-4 py-2 text-left">Date</th>
+                <th className="px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
               {demandes.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={6}
                     className="px-4 py-2 text-center text-gray-500"
                   >
                     Aucune demande disponible
@@ -101,6 +106,14 @@ export default function ListeDemandes() {
                           ? new Date(d.dateDemande).toLocaleDateString()
                           : "-"}
                       </td>
+                      <td className="px-4 py-2">
+                        <button
+                          className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                          onClick={() => setSelectedDemande(d)}
+                        >
+                          Voir details
+                        </button>
+                      </td>
                     </tr>
                   );
                 })
@@ -108,6 +121,29 @@ export default function ListeDemandes() {
             </tbody>
           </table>
         </div>
+
+        {selectedDemande && (
+          <div className="mt-6 p-4 bg-gray-200 rounded shadow-md">
+            <h2 className="text-xl font-bold mb-2">Détails de la demande</h2>
+            <p>
+              <strong>Type :</strong> {selectedDemande.typeDemande}
+            </p>
+            <p>
+              <strong>Date :</strong>{" "}
+              {new Date(selectedDemande.dateDemande).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Description :</strong>{" "}
+              {selectedDemande.description || "-"}
+            </p>
+            <button
+              onClick={() => setSelectedDemande(null)}
+              className="mt-4 px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm"
+            >
+              Fermer
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );

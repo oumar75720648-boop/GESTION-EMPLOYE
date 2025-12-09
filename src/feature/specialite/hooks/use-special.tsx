@@ -14,7 +14,6 @@ export const useSpecialites = () => {
   const [specialites, setSpecialites] = useState<Specialite[]>([]);
   const [editId, setEditId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<SpecialiteDto>({
     defaultValues: { nomSpecialite: "", idDepartement: 0 },
@@ -23,12 +22,9 @@ export const useSpecialites = () => {
   // Récupérer les spécialités depuis l'API
   const fetchSpecialites = async () => {
     setLoading(true);
-    setError(null);
     try {
       const data = await specialiteService.getSpecialites();
       setSpecialites(data);
-    } catch {
-      setError("Impossible de récupérer les spécialités");
     } finally {
       setLoading(false);
     }
@@ -41,10 +37,8 @@ export const useSpecialites = () => {
   // Création ou modification d'une spécialité
   const handleSubmit = async (data: SpecialiteDto) => {
     setLoading(true);
-    setError(null);
     try {
       if (editId !== null) {
-        // Mise à jour locale (tu peux ajouter la mise à jour via API ici)
         setSpecialites((prev) =>
           prev.map((s) =>
             s.idSpecialite === editId
@@ -65,8 +59,6 @@ export const useSpecialites = () => {
         setSpecialites((prev) => [...prev, newSpec]);
       }
       form.reset();
-    } catch {
-      setError("Erreur lors de la création ou modification de la spécialité");
     } finally {
       setLoading(false);
     }
@@ -79,13 +71,25 @@ export const useSpecialites = () => {
     setEditId(spec.idSpecialite);
   };
 
+  // Suppression d'une spécialité
+  const handleDelete = async (id: number) => {
+    if (!confirm("Voulez-vous vraiment supprimer cette spécialité ?")) return;
+    setLoading(true);
+    try {
+      await specialiteService.deleteSpecialite(id);
+      await fetchSpecialites();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     specialites,
     form,
     handleSubmit,
     handleEdit,
+    handleDelete,
     editId,
     loading,
-    error,
   };
 };

@@ -1,43 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { useDepartements } from "@/feature/departement/hooks/use-depart";
 import { useSpecialites } from "@/feature/specialite/hooks/use-special";
-import { employeService } from "@/feature/create-employe/service/create";
-import { EmployeFormData } from "@/feature/create-employe/entites/employe-end";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-
-interface Employe extends EmployeFormData {
-  id: number; 
-}
+import { useEmploye } from "@/feature/create-employe/hooks/use-employe";
 
 export default function ListeEmployes() {
   const router = useRouter();
-  const [employes, setEmployes] = useState<Employe[]>([]);
-  const [loading, setLoading] = useState(true);
-
+  const { employes, toggleActif, pending } = useEmploye();
   const { departements } = useDepartements();
   const { specialites } = useSpecialites();
 
-  useEffect(() => {
-    async function loadEmployes() {
-      try {
-        const data = await employeService.getEmployes();
-        setEmployes(data);
-      } catch (error) {
-        console.error("Erreur récupération employés :", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadEmployes();
-  }, []);
-
-
   return (
-    <div className="flex flex-col items-center justify-start min-h-[70vh] w-full p-6 bg-gray-50">
-      <div className="flex w-full max-w-6xl justify-between items-center mb-6">
+    <div className="p-6 bg-gray-50 min-h-[70vh] flex flex-col items-center">
+      <div className="flex w-full max-w-6xl justify-between mb-6">
         <h2 className="text-2xl font-semibold text-[#160b7c]">
           Liste des employés ({employes.length})
         </h2>
@@ -49,35 +26,22 @@ export default function ListeEmployes() {
         </Button>
       </div>
 
-      <div className="w-full max-w-6xl overflow-x-auto bg-white rounded-md p-4 shadow-md">
-        <table className="min-w-full divide-y divide-gray-200 border border-gray-200">
+      <div className="w-full max-w-6xl bg-white rounded-md shadow-md p-4">
+        <table className="w-full table-auto divide-y divide-gray-200 border border-gray-200">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Nom
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Prénom
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Email
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Contact
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Département
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Spécialité
-              </th>
-              <th className="px-4 py-2 text-center text-sm font-medium text-gray-700">
-                Actions
-              </th>
+              <th className="px-4 py-2 text-left">Nom</th>
+              <th className="px-4 py-2 text-left">Prénom</th>
+              <th className="px-4 py-2 text-left">Email</th>
+              <th className="px-4 py-2 text-left">Contact</th>
+              <th className="px-4 py-2 text-left">Département</th>
+              <th className="px-4 py-2 text-left">Spécialité</th>
+              <th className="px-4 py-2 text-center">Statut</th>
+              <th className="px-4 py-2 text-center">Actions</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-200">
+          <tbody>
             {employes.map((emp) => {
               const departementNom =
                 departements.find((d) => d.idDepartement === emp.departementId)
@@ -88,28 +52,37 @@ export default function ListeEmployes() {
 
               return (
                 <tr key={emp.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 text-sm text-gray-800">{emp.nom}</td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {emp.prenom}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {emp.email}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {emp.contact}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {departementNom}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-800">
-                    {specialiteNom}
+                  <td className="px-4 py-2">{emp.nom}</td>
+                  <td className="px-4 py-2">{emp.prenom}</td>
+                  <td className="px-4 py-2 break-words">{emp.email}</td>
+                  <td className="px-4 py-2">{emp.contact}</td>
+                  <td className="px-4 py-2">{departementNom}</td>
+                  <td className="px-4 py-2">{specialiteNom}</td>
+                  <td className="px-4 py-2 text-center">
+                    <span
+                      className={
+                        emp.actif
+                          ? "text-green-600 font-semibold"
+                          : "text-gray-500 font-semibold"
+                      }
+                    >
+                      {emp.actif ? "Actif" : "Désactivé"}
+                    </span>
                   </td>
                   <td className="px-4 py-2 text-center">
                     <Button
-                      variant="destructive"
-                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                      onClick={async () => {
+                        const updated = await toggleActif(emp.id, emp.actif);
+                        emp.actif = updated.actif;
+                      }}
+                      disabled={pending}
+                      className={
+                        emp.actif
+                          ? "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                          : "bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+                      }
                     >
-                      Supprimer
+                      {emp.actif ? "Désactiver" : "Activer"}
                     </Button>
                   </td>
                 </tr>

@@ -26,17 +26,27 @@ apiClients.interceptors.request.use((config: any) => {
 apiClients.interceptors.response.use(
   (response: any) => response,
   (error: any) => {
-    if (error.response?.status === 401) {
-      console.warn("401 Unauthorized : token manquant ou invalide");
+    const status = error.response?.status;
+    const data = error.response?.data;
 
-      if (typeof window !== "undefined") {
-        // Supprimer le token si invalide
+    if (status === 401) {
+      if (typeof window !== "undefined" && !window.location.pathname.includes("/auth")) {
+        console.warn("401 Unauthorized : token manquant ou invalide");
         localStorage.removeItem("accessToken");
-
-        // Redirection vers la page de login
-        window.location.href = "/auth";
+        window.location.href = "/auth";         
       }
     }
+
+    if (
+      status === 403 &&
+      data?.message === "Vous devez changer votre mot de passe avant de continuer"
+    ) {
+      if (typeof window !== "undefined") {
+        const userId = data.userId;
+        window.location.href = `/auth/Password?userId=${userId}`;
+      }
+    }
+
     return Promise.reject(error);
   }
 );

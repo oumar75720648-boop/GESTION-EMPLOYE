@@ -20,7 +20,21 @@ export async function getEmployes() {
   return response.data;
 }
 
+export async function desactiverEmploye(id: number) {
+  const response = await apiClient.put(`/utilisateurs/${id}/disable`);
+  return { actif: false, message: response.data.message };
+}
+
+export async function activerEmploye(id: number) {
+  const response = await apiClient.put(`/utilisateurs/${id}/reactivate`);
+  return { actif: true, message: response.data.message };
+}
+
+
+
 export const employeService = {
   createEmploye,
   getEmployes,
+  desactiverEmploye,
+  activerEmploye,
 };

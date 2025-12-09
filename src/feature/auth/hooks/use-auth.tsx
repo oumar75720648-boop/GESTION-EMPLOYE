@@ -10,61 +10,49 @@ import { Routes } from "@/lib/routes";
 import { useAuthStore } from "../store/auth";
 
 export function useLoginForm() {
+  const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fetching, setFetching] = useState<boolean>(false);
 
   const router = useRouter();
   const {} = useAuthStore();
 
   const form = useForm<AuthDto>({
-    resolver: zodResolver(authSchema), 
+    resolver: zodResolver(authSchema),
     defaultValues: {
       email: "",
       motDePasse: "",
     },
   });
 
-const action = async () => {
-  try {
-    setError(null);
-    setFetching(true);
-    const values = form.getValues();
+  const action = async () => {
+    try {
+      setFetching(true);
+      setError(null);
 
-    const response = await authService.authenticationWithEmail(values);
-    const accessToken = response.token;
+      const values = form.getValues();
+      const response = await authService.authenticationWithEmail(values);
 
-    console.log("Utilisateur :", response.user);
+      const accessToken = response.token;
 
-    // --- LOGIN NORMAL ---
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
-      router.push(Routes.home.dashboard.path);
-    }
-  } catch (err: any) {
-
-    if (err?.response?.status === 403 && err?.response?.data?.message) {
-      const msg = err.response.data.message;
-      if (msg === "Vous devez changer votre mot de passe avant de continuer") {
-       
-        const userId = err.response.data.userId;
-        router.push(`/auth/Password?userId=${userId}`);
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+        router.push(Routes.home.dashboard.path);
         return;
       }
+    } catch (err: any) {
+      
+      const msg = err?.response?.data?.error || "changer votre mot de passe ";
+      setError(msg);
+      
+    } finally {
+      setFetching(false);
     }
+  };
 
-    
-    if (err instanceof Error) {
-      setError(err.message);
-    } else if (err?.response?.data?.error?.message) {
-      setError(err.response.data.error.message);
-    } else {
-      setError("E-mail ou mot de passe incorrect");
-    }
-  } finally {
-    setFetching(false);
-  }
-};
-
-
-  return { ...form, action, error, pending: fetching };
+  return {
+    ...form,
+    action,
+    pending: fetching,
+    error,
+  };
 }
