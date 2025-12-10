@@ -9,7 +9,6 @@ const apiClients = axios.create({
   },
 });
 
-// Ajouter le token à chaque requête si présent
 apiClients.interceptors.request.use((config: any) => {
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("accessToken");

@@ -6,11 +6,15 @@ import { useDepartements } from "@/feature/departement/hooks/use-depart";
 import { useSpecialites } from "@/feature/specialite/hooks/use-special";
 import { useEmploye } from "../hooks/use-employe";
 import { EmployeFormData } from "../entites/employe-end";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AjouterEmploye() {
   const { departements } = useDepartements();
   const { specialites } = useSpecialites();
   const { action, pending, error } = useEmploye();
+  const [visible, setVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // ✅ message succès
 
   const { register, handleSubmit, reset } = useForm<EmployeFormData>({
     defaultValues: {
@@ -21,13 +25,18 @@ export default function AjouterEmploye() {
       motDePasse: "",
       departementId: null,
       specialiteId: null,
-      typeUtilisateurId: null, // bien en number | null
+      typeUtilisateurId: null,
     },
   });
 
   const onSubmit = async (data: EmployeFormData) => {
-    await action(data);
-    reset();
+    const result = await action(data); // action renvoie true si succès
+    if (result) {
+      setSuccessMessage("Utilisateur créé avec succès !"); // ✅ message succès
+      reset();
+    } else {
+      setSuccessMessage(""); // efface le message si échec
+    }
   };
 
   return (
@@ -38,6 +47,12 @@ export default function AjouterEmploye() {
 
       {error && (
         <div className="mb-4 p-3 text-red-700 bg-red-100 rounded">{error}</div>
+      )}
+
+      {successMessage && (
+        <div className="mb-4 p-3 text-green-700 bg-green-100 rounded">
+          {successMessage}
+        </div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -53,7 +68,6 @@ export default function AjouterEmploye() {
               required
             />
           </div>
-
           <div className="flex-1">
             <label className="block mb-1 font-medium">Prénom</label>
             <input
@@ -70,7 +84,7 @@ export default function AjouterEmploye() {
         <div>
           <label className="block mb-1 font-medium">Contact</label>
           <input
-            type="text"
+            type="number"
             placeholder="Téléphone"
             {...register("contact")}
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -90,19 +104,25 @@ export default function AjouterEmploye() {
         </div>
 
         {/* Mot de passe */}
-        <div>
+        <div className="relative w-full">
           <label className="block mb-1 font-medium">Mot de passe</label>
           <input
-            type="password"
+            type={visible ? "text" : "password"}
             placeholder="Mot de passe"
             {...register("motDePasse")}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full border border-gray-300 rounded px-3 py-2 pr-10"
             required
             minLength={6}
           />
+          <button
+            type="button"
+            onClick={() => setVisible(!visible)}
+            className="absolute inset-y-11 right-2 flex items-center p-1 text-gray-500"
+          >
+            {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
         </div>
 
-        {/* Département */}
         <div>
           <label className="block mb-1 font-medium">Département</label>
           <select
