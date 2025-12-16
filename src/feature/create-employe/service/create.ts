@@ -5,7 +5,7 @@ import { AxiosResponse } from "axios";
 
 export async function createEmploye(
   data: EmployeFormData
-): Promise<AxiosResponse<any>> {
+): Promise<AxiosResponse<unknown>> {
   try {
     const response = await apiClient.post("/utilisateurs", data);
     return response;
@@ -14,6 +14,7 @@ export async function createEmploye(
     throw err;
   }
 }
+
 
 export async function getEmployes() {
   const response = await apiClient.get("/utilisateurs");

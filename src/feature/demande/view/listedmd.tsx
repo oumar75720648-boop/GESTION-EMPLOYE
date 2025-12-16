@@ -50,7 +50,7 @@ export default function DemandesList() {
               <th className="px-4 py-2 text-center">Actions</th>
             </tr>
           </thead>
-          {/* chat*/}
+
           <tbody className="divide-y divide-gray-200">
             {demandes.length === 0 ? (
               <tr>
@@ -63,31 +63,16 @@ export default function DemandesList() {
                 <tr key={d.idDemande} className="hover:bg-gray-50">
                   <td className="px-4 py-2">{d.utilisateur?.nom || "-"}</td>
                   <td className="px-4 py-2">{d.utilisateur?.prenom || "-"}</td>
-                  <td className="px-4 py-2">{d.utilisateur?.email || "-"}</td>
+                  <td className="px-4 py-2 break-words">
+                    {d.utilisateur?.email || "-"}
+                  </td>
                   <td className="px-4 py-2">{d.typeDemande || "-"}</td>
                   <td className="px-4 py-2">
                     {d.dateDemande
                       ? new Date(d.dateDemande).toLocaleDateString()
                       : "-"}
                   </td>
-
-                  <td className="px-4 py-2 flex items-center justify-center gap-2">
-                    <button
-                      disabled={loading}
-                      onClick={() => handleAction(d.idDemande, "ACCEPTEE")}
-                      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-                    >
-                      Accepter
-                    </button>
-
-                    <button
-                      disabled={loading}
-                      onClick={() => handleAction(d.idDemande, "REFUSEE")}
-                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-                    >
-                      Refuser
-                    </button>
-
+                  <td className="px-4 py-2 text-center">
                     <button
                       onClick={() => setSelectedDemande(d)}
                       className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
@@ -124,12 +109,31 @@ export default function DemandesList() {
           <p>
             <strong>Description :</strong> {selectedDemande.description || "-"}
           </p>
-          <button
-            onClick={() => setSelectedDemande(null)}
-            className="mt-4 px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm"
-          >
-            Fermer
-          </button>
+
+          <div className="mt-4 flex gap-2">
+            <button
+              disabled={loading}
+              onClick={() =>
+                handleAction(selectedDemande.idDemande, "ACCEPTEE")
+              }
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Accepter
+            </button>
+            <button
+              disabled={loading}
+              onClick={() => handleAction(selectedDemande.idDemande, "REFUSEE")}
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Refuser
+            </button>
+            <button
+              onClick={() => setSelectedDemande(null)}
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            >
+              Fermer
+            </button>
+          </div>
         </div>
       )}
     </div>

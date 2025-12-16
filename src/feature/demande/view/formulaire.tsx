@@ -13,6 +13,7 @@ export default function FormulaireDemandeSimple() {
   const [description, setDescription] = useState("");
   const [user, setUser] = useState<any | null>(null);
   const [pending, setPending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // Message succès
 
   useEffect(() => {
     async function fetchUser() {
@@ -24,8 +25,10 @@ export default function FormulaireDemandeSimple() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccessMessage("");
+
     if (!type || !description || !user) {
-      return alert("Veuillez remplir tous les champs.");
+      return; 
     }
 
     const payload: Omit<DemandePayload, "id"> = {
@@ -35,20 +38,15 @@ export default function FormulaireDemandeSimple() {
       prioriteDemande: priorite,
       dateDemande: date + "T00:00:00",
       utilisateurId: user.id,
+      observation: undefined,
+      idDemande: undefined,
+      utilisateur: undefined,
     };
 
     try {
       setPending(true);
       await createDemande(payload);
-      alert("Demande envoyée avec succès !");
-
-      setType("");
-      setPriorite("Normale");
-      setDate(today);
-      setDescription("");
-    } catch (err) {
-      console.error("Erreur lors de l'envoi :", err);
-      alert("Erreur lors de l'envoi de la demande.");
+      setSuccessMessage("✅ Demande envoyée !");
     } finally {
       setPending(false);
     }
@@ -59,6 +57,13 @@ export default function FormulaireDemandeSimple() {
       <h2 className="text-2xl font-bold text-[#160b7c] text-center">
         Nouvelle demande
       </h2>
+
+      {successMessage && (
+        <div className="p-2 text-green-800 bg-green-100 border border-green-300 rounded-md">
+          {successMessage}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label className="block mb-1 font-medium">Type de demande</label>

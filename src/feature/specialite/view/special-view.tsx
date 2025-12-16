@@ -14,8 +14,7 @@ export default function SpecialiteView() {
       <h1 className="text-3xl font-bold text-[#160b7c]">
         Gestion des Spécialités
       </h1>
-
-      {/* Formulaire de création */}
+    
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-4"

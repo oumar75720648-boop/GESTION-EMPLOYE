@@ -6,10 +6,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getFormData<T>(formData: FormData): T {
-  const result: any = {};
+  const result: Record<string, FormDataEntryValue> = {};
+
   formData.forEach((value, key) => {
     result[key] = value;
   });
+
   return result as T;
 }
 

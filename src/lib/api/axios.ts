@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { Config } from "./config";
 
 const apiClients = axios.create({
@@ -22,27 +22,35 @@ apiClients.interceptors.request.use((config: any) => {
   return config;
 });
 
+
 apiClients.interceptors.response.use(
-  (response: any) => response,
-  (error: any) => {
+  (response: AxiosResponse) => response,
+
+  (error: AxiosError) => {
     const status = error.response?.status;
-    const data = error.response?.data;
+    const data = error.response?.data as {
+      message?: string;
+      userId?: string | number;
+    };
 
     if (status === 401) {
-      if (typeof window !== "undefined" && !window.location.pathname.includes("/auth")) {
+      if (
+        typeof window !== "undefined" &&
+        !window.location.pathname.includes("/auth")
+      ) {
         console.warn("401 Unauthorized : token manquant ou invalide");
         localStorage.removeItem("accessToken");
-        window.location.href = "/auth";         
+        window.location.href = "/auth";
       }
     }
 
     if (
       status === 403 &&
-      data?.message === "Vous devez changer votre mot de passe avant de continuer"
+      data?.message ===
+        "Vous devez changer votre mot de passe avant de continuer"
     ) {
       if (typeof window !== "undefined") {
-        const userId = data.userId;
-        window.location.href = `/auth/Password?userId=${userId}`;
+        window.location.href = `/auth/Password?userId=${data.userId}`;
       }
     }
 

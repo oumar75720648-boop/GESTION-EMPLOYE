@@ -23,7 +23,6 @@ export const useEmploye = () => {
     fetch();
   }, []);
 
-  // ⚡ Ajout de la fonction action
   const action = async (data: EmployeFormData) => {
     setPending(true);
     setError(null);

@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,18 +33,28 @@ export function Connexion() {
     if (typeof window === "undefined") return;
 
     const token = localStorage.getItem("accessToken");
-    if (!token) return;
+    if (!token) return; // pas connecté → rester sur login
 
     const fetchUserAndRedirect = async () => {
       try {
         const user = await getUserInFo();
         if (!user) return;
-      } catch{
+
+        const role = user.role?.toUpperCase();
+
+        if (role === "ADMIN") {
+          router.replace("/dashboard");
+        } else if (role === "EMPLOYE") {
+          router.replace("/demande-list");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'utilisateur", error);
       }
     };
 
     fetchUserAndRedirect();
   }, [router]);
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">

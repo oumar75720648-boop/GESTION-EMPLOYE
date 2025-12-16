@@ -1,5 +1,5 @@
-import { Compte } from "@/feature/auth/views/profil";
+import { Profil } from "@/feature/auth/views/profil";
 
 export default function Page() {
-  return <Compte />;
+  return <Profil />;
 }

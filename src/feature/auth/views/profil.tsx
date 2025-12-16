@@ -10,7 +10,7 @@ import {
 } from "@/feature/auth/services/login";
 import { AfterConnect } from "@/feature/auth/entities/auth-entities";
 
-export function Compte() {
+export function Profil() {
   const today = new Date().toISOString().split("T")[0];
 
   const [date, setDate] = useState(today);

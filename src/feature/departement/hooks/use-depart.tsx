@@ -38,7 +38,7 @@ export const useDepartements = () => {
     try {
       await departementService.createDepartement(data.nomDepartement);
       form.reset();
-      await fetchDepartements(); // recharge la liste après création
+      await fetchDepartements(); 
     } finally {
       setLoading(false);
     }
@@ -48,7 +48,7 @@ export const useDepartements = () => {
     setLoading(true);
     try {
       await departementService.deleteDepartement(id);
-      await fetchDepartements(); // recharge la liste après suppression
+      await fetchDepartements(); 
     } finally {
       setLoading(false);
     }

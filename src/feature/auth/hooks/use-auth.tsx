@@ -5,16 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authSchema, AuthDto } from "../validations/auth-validate";
-import { authService } from "../services/login";
+import { authService, getUserInFo } from "../services/login";
 import { Routes } from "@/lib/routes";
-import { useAuthStore } from "../store/auth";
 
 export function useLoginForm() {
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
-  const {} = useAuthStore();
 
   const form = useForm<AuthDto>({
     resolver: zodResolver(authSchema),
@@ -32,18 +30,26 @@ export function useLoginForm() {
       const values = form.getValues();
       const response = await authService.authenticationWithEmail(values);
 
-      const accessToken = response.token;
+      const accessToken = response?.token;
 
-      if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
-        router.push(Routes.home.dashboard.path);
-        return;
+      if (!accessToken) return;
+
+      // 🔐 Sauvegarde du token
+      localStorage.setItem("accessToken", accessToken);
+
+      // 👤 Récupération utilisateur connecté
+      const user = await getUserInFo();
+      const role = user?.role?.toUpperCase();
+
+      // 🚦 Redirection selon le rôle
+      if (role === "ADMIN") {
+        router.replace(Routes.home.dashboard.path);
+      } else if (role === "EMPLOYE") {
+        router.replace("/demande-list");
       }
     } catch (err: any) {
-      
-      const msg = err?.response?.data?.error || "changer votre mot de passe ";
+      const msg = err?.response?.data?.error || "Changer votre mot de passe";
       setError(msg);
-      
     } finally {
       setFetching(false);
     }

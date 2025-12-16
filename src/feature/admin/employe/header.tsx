@@ -11,12 +11,7 @@ type PageHeaderProps = {
 export default function PageHeader({ user }: PageHeaderProps) {
   const [search, setSearch] = useState("");
 
-  const defaultUser = user || {
-    name: "Oumar Traoré",
-    email: "oumar@example.com",
-    avatar: "/avatar.png",
-  };
-
+  const defaultUser = user || {}
   return (
     <header className="w-full flex items-center justify-between px-4 py-4 ">
     

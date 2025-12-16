@@ -8,8 +8,10 @@ export interface AfterConnect {
   message: string;
   token: string;
   user: User;
-  
+ 
 }
+
+  
 
 export interface User {
   id: number;
@@ -22,4 +24,5 @@ export interface User {
   departement: string;
   specialite: string;
   derniereConnexion: string;
+  description : string ;
 }
