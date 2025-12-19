@@ -19,7 +19,6 @@ export const useSpecialites = () => {
     defaultValues: { nomSpecialite: "", idDepartement: 0 },
   });
 
-  // Récupérer les spécialités depuis l'API
   const fetchSpecialites = async () => {
     setLoading(true);
     try {
@@ -34,7 +33,6 @@ export const useSpecialites = () => {
     fetchSpecialites();
   }, []);
 
-  // Création ou modification d'une spécialité
   const handleSubmit = async (data: SpecialiteDto) => {
     setLoading(true);
     try {
@@ -64,7 +62,6 @@ export const useSpecialites = () => {
     }
   };
 
-  // Préparer le formulaire pour la modification
   const handleEdit = (spec: Specialite) => {
     form.setValue("nomSpecialite", spec.nomSpecialite);
     form.setValue("idDepartement", spec.idDepartement);

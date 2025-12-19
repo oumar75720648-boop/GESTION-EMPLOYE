@@ -1,5 +1,5 @@
-import { Profil } from "@/feature/auth/views/profil";
+import { ChangePass } from "@/feature/auth/views/chang-pass";
 
 export default function Page() {
-  return <Profil />;
+  return <ChangePass />;
 }

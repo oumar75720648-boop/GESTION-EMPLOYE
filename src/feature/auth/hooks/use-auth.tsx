@@ -28,20 +28,19 @@ export function useLoginForm() {
       setError(null);
 
       const values = form.getValues();
-      const response = await authService.authenticationWithEmail(values);
 
-      const accessToken = response?.token;
+      const response = await authService.authenticationWithEmail(values); //service appel API
 
-      if (!accessToken) return;
+      const accessToken = response?.token; //recupration 
 
-      // 🔐 Sauvegarde du token
+      if (!accessToken) return;      
+
       localStorage.setItem("accessToken", accessToken);
 
-      // 👤 Récupération utilisateur connecté
       const user = await getUserInFo();
+        
       const role = user?.role?.toUpperCase();
 
-      // 🚦 Redirection selon le rôle
       if (role === "ADMIN") {
         router.replace(Routes.home.dashboard.path);
       } else if (role === "EMPLOYE") {
@@ -62,3 +61,5 @@ export function useLoginForm() {
     error,
   };
 }
+
+

@@ -20,7 +20,7 @@ export function NavUser() {
     ? `${user.nom} ${user.prenom}`
     : "Utilisateur";
 
-  const goToProfile = () => router.push("/account");
+  const goToProfile = () => router.push("/profil");
 
   return (
     <button

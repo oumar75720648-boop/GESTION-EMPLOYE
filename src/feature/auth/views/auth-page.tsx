@@ -33,8 +33,7 @@ export function Connexion() {
     if (typeof window === "undefined") return;
 
     const token = localStorage.getItem("accessToken");
-    if (!token) return; // pas connecté → rester sur login
-
+    if (!token) return;
     const fetchUserAndRedirect = async () => {
       try {
         const user = await getUserInFo();

@@ -51,7 +51,9 @@ export default function ListeEmployes() {
                   ?.nomSpecialite || "—";
 
               return (
-                <tr key={emp.id} className="hover:bg-gray-50">
+                <tr key={emp.id} 
+                  onClick={()=> router.push(`/profil-user?id=${emp.id}`)}
+                  className="hover:bg-gray-50 cursor-pointer">
                   <td className="px-4 py-2">{emp.nom}</td>
                   <td className="px-4 py-2">{emp.prenom}</td>
                   <td className="px-4 py-2 break-words">{emp.email}</td>

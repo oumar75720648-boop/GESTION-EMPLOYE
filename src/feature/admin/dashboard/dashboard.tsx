@@ -13,7 +13,7 @@ import { useDepartements } from "@/feature/departement/hooks/use-depart";
 import { employeService } from "@/feature/create-employe/service/create";
 import { getUserInFo } from "@/feature/auth/services/login";
 import { fetchDemandes } from "@/feature/demande/service/demande-service";
-import { getSpecialites } from "@/feature/specialite/service/special-ser"; // À créer si pas encore fait
+import { getSpecialites } from "@/feature/specialite/service/special-ser"; 
 import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
@@ -59,14 +59,14 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6 px-4 sm:px-6 md:px-8 lg:px-12">
-      {/* Header */}
+   
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Tableau de bord</h1>
           <p className="text-black mt-1">
             Bienvenue,{" "}
             <strong>
-              {user.nom} {user.prenom}
+              {user.nom} {user.prenom} 
             </strong>
           </p>
         </div>

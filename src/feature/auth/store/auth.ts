@@ -3,8 +3,8 @@ import { User } from "../entities/auth-entities";
 
 type State = {
   authUser: User | null;
-  isLoggedIn: boolean;
-  setToken: (accessToken: string) => void;
+  isLoggedIn: boolean; 
+  setToken: (accessToken: string) => void; 
   setAuthUser: (user?: User | null) => void;
   logout: (redirectTo?: string) => void;
 };

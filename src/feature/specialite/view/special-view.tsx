@@ -1,22 +1,41 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useDepartements } from "@/feature/departement/hooks/use-depart";
 import { useSpecialites } from "@/feature/specialite/hooks/use-special";
 
 export default function SpecialiteView() {
+  const router = useRouter();
+
   const { departements } = useDepartements();
   const { specialites, form, handleSubmit, handleEdit, handleDelete, loading } =
     useSpecialites();
+
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   return (
     <div className="p-6 max-w-4xl mx-auto flex flex-col gap-6">
       <h1 className="text-3xl font-bold text-[#160b7c]">
         Gestion des Spécialités
       </h1>
-    
+
+      {/* ✅ Message vert */}
+      {successMessage && (
+        <div className="bg-green-100 text-green-700 px-4 py-2 rounded-md">
+          {successMessage}
+        </div>
+      )}
+
+      {/* FORMULAIRE */}
       <form
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={form.handleSubmit(async (data) => {
+          await handleSubmit(data);
+          setSuccessMessage("Spécialité créée avec succès ✅");
+
+          setTimeout(() => setSuccessMessage(null), 3000);
+        })}
         className="flex flex-col gap-4"
       >
         <div className="flex flex-col gap-1">
@@ -37,6 +56,7 @@ export default function SpecialiteView() {
           </select>
         </div>
 
+        {/* Nom spécialité */}
         <div className="flex flex-col gap-1">
           <label htmlFor="specialite" className="font-medium">
             Nom de la spécialité
@@ -52,24 +72,25 @@ export default function SpecialiteView() {
 
         <Button
           type="submit"
-          className="bg-[#160b7c] hover:bg-[#0f0660] text-white px-4 py-2 rounded-lg"
           disabled={loading}
+          className="bg-[#160b7c] hover:bg-[#0f0660] text-white"
         >
           {loading ? "Chargement..." : "Créer"}
         </Button>
       </form>
 
-      {/* Liste des spécialités */}
+      {/* TABLE */}
       <div className="overflow-x-auto mt-4">
         <table className="min-w-full bg-white shadow rounded-md divide-y divide-gray-200">
           <thead className="bg-[#160b7c] text-white">
             <tr>
-              <th className="px-4 py-2 text-left w-1/12">#</th>
-              <th className="px-4 py-2 text-left w-3/12">Nom</th>
-              <th className="px-4 py-2 text-left w-4/12">Département</th>
-              <th className="px-4 py-2 text-left w-4/12">Actions</th>
+              <th className="px-4 py-2">#</th>
+              <th className="px-4 py-2">Nom</th>
+              <th className="px-4 py-2">Département</th>
+              <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-gray-200">
             {specialites.length === 0 ? (
               <tr>
@@ -82,29 +103,39 @@ export default function SpecialiteView() {
                 const dep = departements.find(
                   (d) => d.idDepartement === spec.idDepartement
                 );
+
                 return (
-                  <tr key={spec.idSpecialite} className="hover:bg-gray-50">
+                  <tr
+                    key={spec.idSpecialite}
+                    className="hover:bg-gray-100 cursor-pointer"
+                    onClick={() =>
+                      router.push(`/specialite-user?id=${spec.idSpecialite}`)
+                    }
+                  >
                     <td className="px-4 py-2">{index + 1}</td>
                     <td className="px-4 py-2">{spec.nomSpecialite}</td>
                     <td className="px-4 py-2">
                       {dep?.nomDepartement || "Département inconnu"}
                     </td>
-                    <td className="px-4 py-2 flex gap-2">
+                    <td
+                      className="px-4 py-2 flex gap-2"
+                      onClick={(e) => e.stopPropagation()} 
+                    >
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => handleDelete(spec.idSpecialite)}
-                        disabled={loading}
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                        onClick={async () => {
+                          await handleDelete(spec.idSpecialite);
+                          setSuccessMessage(
+                            "Spécialité supprimée avec succès ✅"
+                          );
+                          setTimeout(() => setSuccessMessage(null), 3000);
+                        }}
                       >
                         Supprimer
                       </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => handleEdit(spec)}
-                        disabled={loading}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
-                      >
+
+                      <Button size="sm" onClick={() => handleEdit(spec)}>
                         Modifier
                       </Button>
                     </td>

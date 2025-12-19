@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangePassword } from "@/feature/auth/views/password";
+import { ChangePassword } from "@/feature/auth/views/chang-pass";
 import { useSearchParams } from "next/navigation";
 
 export default function Page() {
