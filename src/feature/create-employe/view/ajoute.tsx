@@ -1,149 +1,173 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { useLoginForm } from "../hooks/use-employe";
+import { useDepartements } from "@/feature/departement/hooks/use-depart";
+import { useSpecialites } from "@/feature/specialite/hooks/use-special";
+import { useEmploye } from "../hooks/use-employe";
+import { EmployeFormData } from "../entites/employe-end";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AjouterEmploye() {
-  const router = useRouter();
+  const { departements } = useDepartements();
+  const { specialites } = useSpecialites();
+  const { action, pending, error } = useEmploye();
+  const [visible, setVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // ✅ message succès
 
-  const {
-    register,
-    handleSubmit,
-    action,
-    pending,
-    formState: { errors },
-  } = useLoginForm();
+  const { register, handleSubmit, reset } = useForm<EmployeFormData>({
+    defaultValues: {
+      nom: "",
+      prenom: "",
+      contact: "",
+      email: "",
+      motDePasse: "",
+      departementId: null,
+      specialiteId: null,
+      typeUtilisateurId: null,
+    },
+  });
 
-  const onError = (err: any) => {
-    console.log("Erreur formulaire :", err);
+  const onSubmit = async (data: EmployeFormData) => {
+    const result = await action(data); // action renvoie true si succès
+    if (result) {
+      setSuccessMessage("Utilisateur créé avec succès !"); // ✅ message succès
+      reset();
+    } else {
+      setSuccessMessage(""); // efface le message si échec
+    }
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow relative">
-      <button
-        onClick={() => router.push("/liste-employe")}
-        className="flex items-center gap-2 text-[#0a043c] hover:text-blue-800 absolute top-4 left-4"
-      >
-        <ArrowLeft size={20} />
-        <span className="font-medium">Retour</span>
-      </button>
-
-      <h1 className="text-2xl font-bold mb-8 text-center text-[#0a043c]">
+    <div className="max-w-xl sm:max-w-2xl mx-auto mt-10 p-6 sm:p-8 bg-white rounded shadow">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-8 text-center text-[#0a043c]">
         Créer un Employé
       </h1>
 
-      <form className="space-y-4" onSubmit={handleSubmit(action, onError)}>
-        {/* Nom */}
-        <div>
-          <label className="block mb-1 font-medium">Nom</label>
-          <input
-            {...register("nom")}
-            type="text"
-            placeholder="Nom"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            required
-          />
-          {errors.nom && <p className="text-red-500 text-sm">{errors.nom.message}</p>}
-        </div>
+      {error && (
+        <div className="mb-4 p-3 text-red-700 bg-red-100 rounded">{error}</div>
+      )}
 
-        {/* Prénom */}
-        <div>
-          <label className="block mb-1 font-medium">Prénom</label>
-          <input
-            {...register("prenom")}
-            type="text"
-            placeholder="Prénom"
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            required
-          />
-          {errors.prenom && <p className="text-red-500 text-sm">{errors.prenom.message}</p>}
+      {successMessage && (
+        <div className="mb-4 p-3 text-green-700 bg-green-100 rounded">
+          {successMessage}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Nom / Prénom */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <label className="block mb-1 font-medium">Nom</label>
+            <input
+              type="text"
+              placeholder="Nom"
+              {...register("nom")}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+              required
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block mb-1 font-medium">Prénom</label>
+            <input
+              type="text"
+              placeholder="Prénom"
+              {...register("prenom")}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+              required
+            />
+          </div>
         </div>
 
         {/* Contact */}
         <div>
           <label className="block mb-1 font-medium">Contact</label>
           <input
-            {...register("contact")}
-            type="text"
+            type="number"
             placeholder="Téléphone"
+            {...register("contact")}
             className="w-full border border-gray-300 rounded px-3 py-2"
-            required
           />
-          {errors.contact && <p className="text-red-500 text-sm">{errors.contact.message}</p>}
         </div>
 
         {/* Email */}
         <div>
           <label className="block mb-1 font-medium">Email</label>
           <input
-            {...register("email")}
             type="email"
             placeholder="Email"
+            {...register("email")}
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
         </div>
 
         {/* Mot de passe */}
-        <div>
+        <div className="relative w-full">
           <label className="block mb-1 font-medium">Mot de passe</label>
           <input
-            {...register("motDePasse")}
-            type="password"
+            type={visible ? "text" : "password"}
             placeholder="Mot de passe"
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            {...register("motDePasse")}
+            className="w-full border border-gray-300 rounded px-3 py-2 pr-10"
             required
+            minLength={6}
           />
-          {errors.motDePasse && <p className="text-red-500 text-sm">{errors.motDePasse.message}</p>}
+          <button
+            type="button"
+            onClick={() => setVisible(!visible)}
+            className="absolute inset-y-11 right-2 flex items-center p-1 text-gray-500"
+          >
+            {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
         </div>
 
-        {/* Département */}
         <div>
           <label className="block mb-1 font-medium">Département</label>
           <select
-            {...register("departementId")}
+            {...register("departementId", { valueAsNumber: true })}
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           >
             <option value="">-- Sélectionnez un département --</option>
-            <option value="RH">Ressources Humaines</option>
-            <option value="Info">Informatique</option>
-            <option value="Compta">Comptabilité</option>
-            <option value="Marketing">Marketing</option>
+            {departements.map((dep) => (
+              <option key={dep.idDepartement} value={dep.idDepartement}>
+                {dep.nomDepartement}
+              </option>
+            ))}
           </select>
-          {errors.departementId && <p className="text-red-500 text-sm">{errors.departementId.message}</p>}
         </div>
 
         {/* Spécialité */}
         <div>
           <label className="block mb-1 font-medium">Spécialité</label>
           <select
-            {...register("specialiteId")}
+            {...register("specialiteId", { valueAsNumber: true })}
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           >
             <option value="">-- Sélectionnez une spécialité --</option>
-            <option value="Dev">Développement</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Support">Support</option>
+            {specialites.map((spec) => (
+              <option key={spec.idSpecialite} value={spec.idSpecialite}>
+                {spec.nomSpecialite}
+              </option>
+            ))}
           </select>
-          {errors.specialiteId && <p className="text-red-500 text-sm">{errors.specialiteId.message}</p>}
         </div>
 
-        {/* Type Utilisateur */}
+        {/* Type utilisateur */}
         <div>
-          <label className="block mb-1 font-medium" >Type Utilisateur</label>
+          <label className="block mb-1 font-medium">Type Utilisateur</label>
           <select
-            {...register("typeUtilisateurId")}
+            {...register("typeUtilisateurId", { valueAsNumber: true })}
             className="w-full border border-gray-300 rounded px-3 py-2"
+            required
           >
             <option value="">-- Sélectionnez un type --</option>
-            <option value="Admin">Administrateur</option>
-            <option value="Employe">Employé</option>
-            <option value="Secretaire">Secrétaire</option>
+            <option value={2}>Administrateur</option>
+            <option value={3}>Employé</option>
           </select>
-          {errors.typeUtilisateurId && <p className="text-red-500 text-sm">{errors.typeUtilisateurId.message}</p>}
         </div>
 
         <Button

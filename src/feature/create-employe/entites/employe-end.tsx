@@ -1,10 +1,10 @@
-export interface CreadEmploye {
-    id: number | null;   
-    nom: string;     
-    prenom: string;
-    constact: number;
-    email: string;
-    motDePasse: string;
-    typeUtilisateurId: string;
-
+export interface EmployeFormData {
+  nom: string;
+  prenom: string;
+  contact: string;
+  email: string;
+  motDePasse: string;
+  departementId: number | null;
+  specialiteId: number | null;
+  typeUtilisateurId: number | null;
 }

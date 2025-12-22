@@ -1,59 +1,65 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { authSchema } from '../validations/auth-validate';
-import { authService } from '../services/login';
-import { Routes } from '@/lib/routes';
-import { useAuthStore } from "../store/auth";
-
-export type LoginFormData = {
-  email: string;
-  motDePasse: string;
-};
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authSchema, AuthDto } from "../validations/auth-validate";
+import { authService, getUserInFo } from "../services/login";
+import { Routes } from "@/lib/routes";
 
 export function useLoginForm() {
+  const [fetching, setFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fetching, setFetching] = useState<boolean>(false);
 
   const router = useRouter();
-   const {  } = useAuthStore();
 
-  const form = useForm<LoginFormData>({
-    resolver: zodResolver(authSchema as any),
+  const form = useForm<AuthDto>({
+    resolver: zodResolver(authSchema),
     defaultValues: {
-      email: '',
-      motDePasse: '',
+      email: "",
+      motDePasse: "",
     },
   });
 
   const action = async () => {
     try {
-      setError(null);
       setFetching(true);
-      const data = form.getValues();
+      setError(null);
 
-      const login = { 
-        email: data.email,
-        motDePasse: data.motDePasse
+      const values = form.getValues();
+
+      const response = await authService.authenticationWithEmail(values); //service appel API
+
+      const accessToken = response?.token; //recupration 
+
+      if (!accessToken) return;      
+
+      localStorage.setItem("accessToken", accessToken);
+
+      const user = await getUserInFo();
+        
+      const role = user?.role?.toUpperCase();
+
+      if (role === "ADMIN") {
+        router.replace(Routes.home.dashboard.path);
+      } else if (role === "EMPLOYE") {
+        router.replace("/demande-list");
       }
-      
-      const response = await authService.authenticationWithEmail(login);
-      const accessToken = response.token;
-
-      if(accessToken) { 
-        localStorage.setItem('accessToken', accessToken);
-        router.push(Routes.home.dashboard.path);
-      }
-
     } catch (err: any) {
-      setError(err?.response?.data?.error?.message || "E-mail ou mot de passe incorrecte");
+      const msg = err?.response?.data?.error || "Changer votre mot de passe";
+      setError(msg);
     } finally {
       setFetching(false);
     }
   };
 
-  return { ...form, action, error, pending: fetching };
+  return {
+    ...form,
+    action,
+    pending: fetching,
+    error,
+  };
 }
+
+

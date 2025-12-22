@@ -1,7 +1,13 @@
-export default function GuestLayout({ children }: { children: React.ReactNode }) {
+import "@/app/globals.css";
+
+export default function RootLayout({ 
+  children 
+}: Readonly<{children: React.ReactNode}>) {
   return (
-    <div >
-      {children}
-    </div>
-  );
+      <html lang="fr">
+        <body className="">
+           {children}
+        </body>
+      </html>
+    );
 }
