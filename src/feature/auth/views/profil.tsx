@@ -15,7 +15,7 @@ export default function UserProfile() {
   } = useQuery({
     queryKey: ["userMe"],
     queryFn: getUserInFo,
-  });
+  }); 
 
   if (isLoading) {
     return <p className="text-center mt-10">Chargement...</p>;
@@ -67,14 +67,6 @@ export default function UserProfile() {
           <p className="text-gray-900">{userMe.role}</p>
         </div>
 
-        <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
-          <h2 className=" font-bold mb-2">Dernière connexion</h2>
-          <p className="text-gray-900">
-            {userMe.derniereConnexion
-              ? new Date(userMe.derniereConnexion).toLocaleString()
-              : "—"}
-          </p>
-        </div>
       </div>
 
       <div className="flex gap-4 mt-6 justify-center">
@@ -85,7 +77,7 @@ export default function UserProfile() {
           Modifier le profil
         </Button>
 
-        <Button onClick={() => router.push("/demande-list")} variant="outline">
+        <Button onClick={() => router.push("")} variant="outline">
           Retour au tableau de bord
         </Button>
       </div>

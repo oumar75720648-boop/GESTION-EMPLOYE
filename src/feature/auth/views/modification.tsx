@@ -3,61 +3,68 @@
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getUserInFo } from "../services/login";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUserInFo, updateUserProfile } from "@/feature/auth/services/login";
+import { User } from "@/feature/auth/entities/auth-entities";
 
 export default function EditProfile() {
-  const {
-    data: userMe,
-    isLoading,
-    error,
-  } = useQuery({
+  const queryClient = useQueryClient();
+
+  const { data: userMe, isLoading } = useQuery<User>({
     queryKey: ["userMe"],
     queryFn: getUserInFo,
   });
 
-  const form = useForm({
+  const form = useForm<User>({
     defaultValues: {
+      id: 0,
       nom: "",
       prenom: "",
       email: "",
       contact: "",
+      typeUtilisateur: "",
+      role: "",
       departement: "",
       specialite: "",
+      derniereConnexion: "",
+      description: "",
     },
   });
 
-  const [succes, setSucces] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (userMe) {
-      form.reset({
-        nom: userMe.nom || "",
-        prenom: userMe.prenom || "",
-        email: userMe.email || "",
-        contact: userMe.contact || "",
-        departement: userMe.departement || "",
-        specialite: userMe.specialite || "",
-      });
-    }
+    if (userMe) form.reset(userMe);
   }, [userMe, form]);
 
-  const onSubmit = (data: any) => {
-    console.log("Données envoyées :", data);
-    setSucces("Profil mis à jour avec succès");
+  const onSubmit = async (data: User) => {
+    if (!userMe) return;
+
+    setMessage(""); 
+    try {
+      await updateUserProfile(userMe.id, data); 
+      setMessage("Profil mis à jour avec succès !");
+      queryClient.invalidateQueries(["userMe"]); 
+    } catch (err: any) {
+      setMessage(err?.message || "Erreur lors de la mise à jour");
+    }
   };
 
   if (isLoading) return <p className="text-center mt-10">Chargement...</p>;
-  if (error)
-    return <p className="text-center mt-10">Erreur lors du chargement</p>;
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md flex flex-col gap-4">
       <h1 className="text-2xl font-bold text-[#160b7c]">Modifier le profil</h1>
 
-      {succes && (
-        <div className="bg-green-100 text-green-700 px-4 py-2 rounded">
-          {succes}
+      {message && (
+        <div
+          className={`px-4 py-2 rounded ${
+            message.includes("Erreur")
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+          }`}
+        >
+          {message}
         </div>
       )}
 
@@ -100,6 +107,11 @@ export default function EditProfile() {
           placeholder="Spécialité"
           className="border px-3 py-2 rounded"
           required
+        />
+        <input
+          {...form.register("description")}
+          placeholder="Description"
+          className="border px-3 py-2 rounded"
         />
 
         <Button

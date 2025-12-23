@@ -14,8 +14,9 @@ export default function AjouterEmploye() {
   const { specialites } = useSpecialites();
   const { action, pending, error } = useEmploye();
   const [visible, setVisible] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // ✅ message succès
+  const [successMessage, setSuccessMessage] = useState("");  
 
+  ///poser le form
   const { register, handleSubmit, reset } = useForm<EmployeFormData>({
     defaultValues: {
       nom: "",
@@ -27,15 +28,16 @@ export default function AjouterEmploye() {
       specialiteId: null,
       typeUtilisateurId: null,
     },
-  });
-
-  const onSubmit = async (data: EmployeFormData) => {
-    const result = await action(data); // action renvoie true si succès
+  });  
+   
+  //validation 
+  const onSubmit = async (data: EmployeFormData) => { 
+    const result = await action(data);   
     if (result) {
-      setSuccessMessage("Utilisateur créé avec succès !"); // ✅ message succès
+      setSuccessMessage("Utilisateur créé avec succès !"); 
       reset();
     } else {
-      setSuccessMessage(""); // efface le message si échec
+      setSuccessMessage(""); 
     }
   };
 
@@ -56,7 +58,7 @@ export default function AjouterEmploye() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Nom / Prénom */}
+
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <label className="block mb-1 font-medium">Nom</label>
@@ -139,7 +141,6 @@ export default function AjouterEmploye() {
           </select>
         </div>
 
-        {/* Spécialité */}
         <div>
           <label className="block mb-1 font-medium">Spécialité</label>
           <select
@@ -156,7 +157,6 @@ export default function AjouterEmploye() {
           </select>
         </div>
 
-        {/* Type utilisateur */}
         <div>
           <label className="block mb-1 font-medium">Type Utilisateur</label>
           <select

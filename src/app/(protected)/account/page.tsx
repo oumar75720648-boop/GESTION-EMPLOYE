@@ -1,4 +1,4 @@
-import { ChangePass } from "@/feature/auth/views/chang-pass";
+import { ChangePass } from "@/feature/admin/employe/view-password";
 
 export default function Page() {
   return <ChangePass />;

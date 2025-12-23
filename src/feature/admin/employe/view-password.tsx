@@ -1,18 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
-import { changePasswordService } from "@/feature/auth/services/login";
+import {
+  getUserInFo,
+  changePasswordService,
+} from "@/feature/auth/services/login";
+import { AfterConnect } from "@/feature/auth/entities/auth-entities";
 
-interface ChangePasswordProps {
-  userId: number;
-}
+export function ChangePass() {
+  const today = new Date().toISOString().split("T")[0];
 
-export function ChangePassword({ userId }: ChangePasswordProps) {
-  const router = useRouter();
-
+  const [date, setDate] = useState(today);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -24,14 +25,16 @@ export function ChangePassword({ userId }: ChangePasswordProps) {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const { data: user } = useQuery<AfterConnect>({
+    queryKey: ["userMe"],
+    queryFn: getUserInFo,
+  });
+
   const handleChangePassword = async () => {
+    if (!user) return;
+
     setError("");
     setMessage("");
-
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      setError("Veuillez remplir tous les champs.");
-      return;
-    }
 
     if (newPassword !== confirmPassword) {
       setError(
@@ -43,22 +46,16 @@ export function ChangePassword({ userId }: ChangePasswordProps) {
     setPending(true);
     try {
       await changePasswordService({
-        userId,
+        userId: user.id,
         oldPassword,
         newPassword,
       });
 
       setMessage("Mot de passe changé avec succès !");
-
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      router.replace("/auth");
-    } catch (err: any) {
-      setError(
-        err?.message ||
-          "Une erreur est survenue lors du changement de mot de passe."
-      );
+    } catch (err: unknown) {
     } finally {
       setPending(false);
     }

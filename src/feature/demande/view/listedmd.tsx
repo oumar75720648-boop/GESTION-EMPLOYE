@@ -2,31 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { fetchDemandes } from "@/feature/demande/service/demande-service";
-import { createObservation } from "@/feature/observation/service/obserr";
+import { useRouter } from "next/navigation";
 
 export default function DemandesList() {
   const [demandes, setDemandes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedDemande, setSelectedDemande] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    load();
+    loadDemandes();
   }, []);
 
-  const load = async () => {
-    const data = await fetchDemandes();
-    setDemandes(data);
-  };
-
-  const handleAction = async (
-    demandeId: number,
-    statut: "ACCEPTEE" | "REFUSEE"
-  ) => {
+  const loadDemandes = async () => {
     setLoading(true);
     try {
-      await createObservation({ demandeId, statut, conces: "" });
-      await load();
-      setSelectedDemande(null);
+      const data = await fetchDemandes();
+      setDemandes(data);
     } finally {
       setLoading(false);
     }
@@ -74,7 +65,9 @@ export default function DemandesList() {
                   </td>
                   <td className="px-4 py-2 text-center">
                     <button
-                      onClick={() => setSelectedDemande(d)}
+                      onClick={() =>
+                        router.push(`/info-dmmd?idDemande=${d.idDemande}`)
+                      }
                       className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                     >
                       Voir détails
@@ -86,56 +79,6 @@ export default function DemandesList() {
           </tbody>
         </table>
       </div>
-
-      {selectedDemande && (
-        <div className="mt-6 p-4 bg-white rounded shadow-md">
-          <h2 className="text-xl font-bold mb-2">Détails de la demande</h2>
-          <p>
-            <strong>Nom :</strong> {selectedDemande.utilisateur?.nom}
-          </p>
-          <p>
-            <strong>Prénom :</strong> {selectedDemande.utilisateur?.prenom}
-          </p>
-          <p>
-            <strong>Email :</strong> {selectedDemande.utilisateur?.email}
-          </p>
-          <p>
-            <strong>Type :</strong> {selectedDemande.typeDemande}
-          </p>
-          <p>
-            <strong>Date :</strong>{" "}
-            {new Date(selectedDemande.dateDemande).toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Description :</strong> {selectedDemande.description || "-"}
-          </p>
-
-          <div className="mt-4 flex gap-2">
-            <button
-              disabled={loading}
-              onClick={() =>
-                handleAction(selectedDemande.idDemande, "ACCEPTEE")
-              }
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
-              Accepter
-            </button>
-            <button
-              disabled={loading}
-              onClick={() => handleAction(selectedDemande.idDemande, "REFUSEE")}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Refuser
-            </button>
-            <button
-              onClick={() => setSelectedDemande(null)}
-              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-            >
-              Fermer
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -31,6 +31,12 @@ export async function changePasswordService(data: ChangePasswordData) {
   return response.data;
 }
 
+export async function updateUserProfile(userId: number, data: User) {
+  const response = await apiClients.put(`/me/${userId}`, data);
+  return response.data;
+}
+
+
 
 
 export const authService = {
@@ -38,4 +44,5 @@ export const authService = {
   logout,
   getUserInFo,
   changePasswordService,
+  updateUserProfile,
 };

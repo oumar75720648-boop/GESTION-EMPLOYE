@@ -18,6 +18,7 @@ export const useDepartements = () => {
     resolver: zodResolver(departementSchema),
     defaultValues: { nomDepartement: "" },
   });
+  
 
   const fetchDepartements = useCallback(async () => {
     setLoading(true);
