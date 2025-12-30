@@ -1,16 +1,15 @@
-
-export type ObservationStatut = "ACCEPTEE" | "REFUSEE" | "EN_ATTENTE";
+export type ObservationStatut = "ACCEPTEE" | "REFUSEE";
 
 export interface ObservationPayload {
-  conces?: string | null;
-  statut: ObservationStatut;
   demandeId: number;
+  statut: ObservationStatut;
+  conces?: string | null;
 }
 
 export interface Observation {
   idObservationDemande: number;
-  conces: string | null;
-  statut: ObservationStatut;
-  dateObservation: string;
   demandeId: number;
+  statut: ObservationStatut;
+  conces: string | null;
+  dateObservation: string;
 }

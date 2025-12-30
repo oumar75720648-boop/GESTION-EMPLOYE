@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import PageHeader from "@/feature/admin/employe/header";
 import { getUserInFo } from "@/feature/auth/services/login";
 import { fetchDemandes } from "@/feature/demande/service/demande-service";
@@ -8,9 +8,14 @@ import { fetchObservations } from "@/feature/observation/service/obserr";
 import { Observation } from "@/feature/observation/entites/obser";
 import { DemandePayload } from "@/feature/demande/entities/demande-entites";
 
+type DemandeAvecObs = DemandePayload & {
+  lastObservation?: Observation | null;
+  motifRefus?: string;
+};
+
 export default function ListeDemandes() {
-  const [demandes, setDemandes] = useState<DemandePayload[]>([]);
-  const [selectedDemande, setSelectedDemande] = useState<DemandePayload | null>(
+  const [demandes, setDemandes] = useState<DemandeAvecObs[]>([]);
+  const [selectedDemande, setSelectedDemande] = useState<DemandeAvecObs | null>(
     null
   );
 
@@ -25,13 +30,22 @@ export default function ListeDemandes() {
       );
 
       const allObs = await fetchObservations();
-      const demandesAvecObs = userDemandes.map((d: DemandePayload) => ({
-        ...d,
-        lastObservation:
-          allObs
-            .filter((o: Observation) => o.demandeId === d.idDemande)
-            .pop() || null,
-      }));
+
+      const demandesAvecObs: DemandeAvecObs[] = userDemandes.map((d) => {
+        const obs = allObs
+          .filter((o: Observation) => o.demandeId === d.idDemande)
+          .sort(
+            (a, b) =>
+              new Date(a.dateObservation).getTime() -
+              new Date(b.dateObservation).getTime()
+          )
+          .pop();
+
+        return {
+          ...d,
+          lastObservation: obs || null,
+        };
+      });
 
       setDemandes(demandesAvecObs);
     };
@@ -42,11 +56,13 @@ export default function ListeDemandes() {
   return (
     <div className="flex-1 flex flex-col">
       <PageHeader />
+
       <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
         <h2 className="text-2xl font-bold text-[#160b7c] mb-6">
-          Historique des Demandes
+          Historique des demandes
         </h2>
 
+        {/* TABLEAU — INCHANGÉ */}
         <div className="w-full overflow-x-auto bg-white rounded-md p-4 shadow-md">
           <table className="min-w-full divide-y divide-gray-200 border border-gray-200">
             <thead className="bg-gray-100">
@@ -54,7 +70,7 @@ export default function ListeDemandes() {
                 <th className="px-4 py-2 text-left">Type</th>
                 <th className="px-4 py-2 text-left">Priorité</th>
                 <th className="px-4 py-2 text-left">Statut</th>
-                <th className="px-4 py-2 text-left">Dernière observation</th>
+                <th className="px-4 py-2 text-left">Observation</th>
                 <th className="px-4 py-2 text-left">Date</th>
                 <th className="px-4 py-2 text-left">Actions</th>
               </tr>
@@ -65,14 +81,14 @@ export default function ListeDemandes() {
                 <tr>
                   <td
                     colSpan={6}
-                    className="px-4 py-2 text-center text-gray-500"
+                    className="px-4 py-6 text-center text-gray-500"
                   >
                     Aucune demande disponible
                   </td>
                 </tr>
               ) : (
                 demandes.map((d) => {
-                  const obs = d.lastObservation;
+                  const statut = d.statutDemande;
 
                   return (
                     <tr key={d.idDemande} className="hover:bg-gray-50">
@@ -80,25 +96,21 @@ export default function ListeDemandes() {
                       <td className="px-4 py-2">{d.prioriteDemande || "-"}</td>
 
                       <td className="px-4 py-2 font-semibold">
-                        {obs?.statut === "ACCEPTEE" ? (
+                        {statut === "ACCEPTEE" ? (
                           <span className="text-green-600">Acceptée</span>
-                        ) : obs?.statut === "REFUSEE" ? (
+                        ) : statut === "REFUSEE" ? (
                           <span className="text-red-600">Refusée</span>
                         ) : (
                           <span className="text-gray-500">En attente</span>
                         )}
                       </td>
 
-                      <td className="px-4 py-2">
-                        {obs ? (
-                          <span className="text-gray-600">
-                            {obs.statut === "ACCEPTEE"
-                              ? "Demande acceptée"
-                              : "Demande refusée"}
-                          </span>
-                        ) : (
-                          <span className="text-gray-500">En attente</span>
-                        )}
+                      <td className="px-4 py-2 text-gray-600">
+                        {statut === "ACCEPTEE"
+                          ? "Demande acceptée"
+                          : statut === "REFUSEE"
+                          ? "Demande refusée"
+                          : "—"}
                       </td>
 
                       <td className="px-4 py-2">
@@ -109,8 +121,8 @@ export default function ListeDemandes() {
 
                       <td className="px-4 py-2">
                         <button
-                          className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                           onClick={() => setSelectedDemande(d)}
+                          className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                         >
                           Voir détails
                         </button>
@@ -123,9 +135,10 @@ export default function ListeDemandes() {
           </table>
         </div>
 
+        {/* DETAILS — AVEC MOTIF SOUS STATUT */}
         {selectedDemande && (
-          <div className="mt-6 p-4 bg-gray-200 rounded shadow-md">
-            <h2 className="text-xl font-bold mb-2">Détails de la demande</h2>
+          <div className="mt-6 bg-white p-4 rounded shadow-md max-w-lg">
+            <h3 className="text-lg font-bold mb-2">Détails de la demande</h3>
 
             <p>
               <strong>Type :</strong> {selectedDemande.typeDemande}
@@ -139,9 +152,20 @@ export default function ListeDemandes() {
               {selectedDemande.description || "-"}
             </p>
 
+            <p>
+              <strong>Statut :</strong> {selectedDemande.statutDemande}
+            </p>
+
+            {selectedDemande.statutDemande === "REFUSEE" && (
+              <p className="text-red-600 mt-1">
+                <strong>Motif de refus :</strong>{" "}
+                {selectedDemande.motifRefus || "-"}
+              </p>
+            )}
+
             <button
               onClick={() => setSelectedDemande(null)}
-              className="mt-4 px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm"
+              className="mt-4 px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
             >
               Fermer
             </button>

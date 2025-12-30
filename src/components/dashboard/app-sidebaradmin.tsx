@@ -3,22 +3,11 @@
   import Image from "next/image";
   import { useRouter, usePathname } from "next/navigation";
   import { useState } from "react";
-  import {
-    IconHome,
-    IconUsers,
-    IconClipboard,
-    IconBuilding,
-    IconSettings,
-    IconStar,
-    IconMenu2,
-    IconX,
-    IconLogout,
-  } from "@tabler/icons-react";
+  import { IconHome,IconUsers,IconBuilding,IconSettings, IconStar,IconMenu2, IconX, IconLogout, IconClipboard,} from "@tabler/icons-react";
   import { useQuery } from "@tanstack/react-query";
   import { getUserInFo } from "@/feature/auth/services/login";
   import { User } from "@/feature/auth/entities/auth-entities";
   import { useAuthStore } from "@/feature/auth/store/auth";
-  import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
   export default function AppSidebar() {
     const router = useRouter();

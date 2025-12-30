@@ -13,7 +13,7 @@ export default function FormulaireDemandeSimple() {
   const [description, setDescription] = useState("");
   const [user, setUser] = useState<any | null>(null);
   const [pending, setPending] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // Message succès
+  const [successMessage, setSuccessMessage] = useState(""); 
 
   useEffect(() => {
     async function fetchUser() {
@@ -73,7 +73,6 @@ export default function FormulaireDemandeSimple() {
             className="w-full border p-2 rounded-md"
             required
           >
-            <option value="">-- Sélectionnez un type --</option>
             <option>Congé annuel</option>
             <option>Autorisation d’absence</option>
             <option>Matériel</option>
@@ -89,6 +88,22 @@ export default function FormulaireDemandeSimple() {
             <option>Demande de prime ou bonus</option>
             <option>Demande d’hébergement ou voyage</option>
             <option>Demande de matériel informatique spécifique</option>
+            <option>Demande de promotion interne</option>
+            <option>Demande de formation externe</option>
+            <option>Demande de congé exceptionnel</option>
+            <option>Demande de remplacement temporaire</option>
+            <option>Demande de remboursement transport</option>
+            <option>Demande de remboursement repas</option>
+            <option>Demande de matériel ergonomique</option>
+            <option>Demande de support technique</option>
+            <option>Demande de réunion / salle</option>
+            <option>Demande de modification planning</option>
+            <option>Demande de prime annuelle</option>
+            <option>Demande de participation à un projet spécial</option>
+            <option>Demande d’accès à un logiciel spécifique</option>
+            <option>Demande de badge visiteur</option>
+            <option>Demande de véhicule temporaire</option>
+            <option>Autre demande administrative</option>
           </select>
         </div>
 

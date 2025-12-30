@@ -1,12 +1,25 @@
+export interface Utilisateur {
+  id: number;
+  nom: string;
+  prenom: string;
+  contact: string;
+  role: string | null;
+}
+
 export interface DemandePayload {
-  observation: unknown;
-  idDemande: number | null | undefined;
-  utilisateur: unknown;
-  id?: number;
+  idDemande: number;
+  id: number;
   typeDemande: string;
   description: string;
   statutDemande: string;
   prioriteDemande: string;
   dateDemande: string;
-  utilisateurId: number;
+  utilisateur: {
+    id: number;
+    nom: string;
+    prenom: string;
+    contact: string;
+    role: string | null;
+  };
+  motifRefus?: string; 
 }
