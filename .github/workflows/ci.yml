@@ -1,48 +1,52 @@
-name: CI - Next.js PNPM
+name: CI-G.E
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: ["main", "develop"]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: ["main", "develop"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Récupération du code
+      #  Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Installation de Node.js
+      #  Installer Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
 
-      # Installation de pnpm
+      #  Installer pnpm (AVANT le cache)
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
-          run_install: false
 
-      # Vérification des versions
+      #  Vérifier les versions
       - name: Check Node & PNPM versions
         run: |
           node -v
           pnpm -v
 
-      # Installation des dépendances
+      #  Cache pnpm
+      - name: Setup pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+
+      #  Installer les dépendances
       - name: Install dependencies
         run: pnpm install
 
-      # Lint
+      #  Lint
       - name: Run lint
         run: pnpm lint
 
-      # Build Next.js
+      #  Build
       - name: Build application
         run: pnpm build
