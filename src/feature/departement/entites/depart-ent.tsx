@@ -10,5 +10,12 @@ export interface Departement {
 }
 
 export interface DepartementDto {
+  idDepartement: number; 
   nomDepartement: string;
+}
+
+
+export interface SpecialiteDto {
+  idSpecialite: number;
+  nomSpecialite: string;
 }

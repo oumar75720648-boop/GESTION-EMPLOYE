@@ -1,4 +1,4 @@
-import EditProfile from "@/feature/auth/views/modification";
+import EditProfile from "@/feature/create-employe/view/modification";
 
   
   export default function Page(){

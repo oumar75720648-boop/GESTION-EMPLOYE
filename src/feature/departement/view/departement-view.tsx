@@ -2,14 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { useDepartements } from "@/feature/departement/hooks/use-depart";
-import { useEmploye } from "@/feature/create-employe/hooks/use-employe";
 import {  useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function ListeDepartements() {
-  const { departements, form, handleSubmit, loading, handleDelete } =
-    useDepartements();
-  const { employes } = useEmploye();
+  const { departements, form, handleSubmit, loading, handleDelete } =useDepartements();
   const router =useRouter() ;
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [selectedDeptId, setSelectedDeptId] = useState<number | null>(null);
@@ -18,13 +15,12 @@ export default function ListeDepartements() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto flex flex-col gap-6">
-      {/* Titre */}
+   
       <h1 className="text-3xl font-bold text-[#160b7c]">
         Gestion des départements
       </h1>
 
-      {/* Formulaire création */}
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex gap-2">
+*      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex gap-2">
         <input
           type="text"
           placeholder="Saisir le nom du département"

@@ -23,22 +23,22 @@ export function useLoginForm() {
   });
 
   const action = async () => {
+    setFetching(true);
+    setError(null);
+
     try {
-      setFetching(true);
-      setError(null);
-
       const values = form.getValues();
+      const response = await authService.authenticationWithEmail(values);
+      const accessToken = response?.token;
 
-      const response = await authService.authenticationWithEmail(values); //service appel API
-
-      const accessToken = response?.token; //recupration 
-
-      if (!accessToken) return;      
+      if (!accessToken) {
+        setError("Email ou mot de passe incorrect");
+        return;
+      }
 
       localStorage.setItem("accessToken", accessToken);
 
       const user = await getUserInFo();
-        
       const role = user?.role?.toUpperCase();
 
       if (role === "ADMIN") {
@@ -46,9 +46,8 @@ export function useLoginForm() {
       } else if (role === "EMPLOYE") {
         router.replace("/demande-list");
       }
-    } catch (err: any) {
-      const msg = err?.response?.data?.error || "Changer votre mot de passe";
-      setError(msg);
+    } catch {
+      setError("Email ou mot de passe incorrect");
     } finally {
       setFetching(false);
     }
@@ -61,5 +60,3 @@ export function useLoginForm() {
     error,
   };
 }
-
-

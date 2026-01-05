@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { getUserInFo } from "@/feature/auth/services/login";
 import { createDemande } from "../service/demande-service";
 import { DemandePayload } from "../entities/demande-entites";
+import { User } from "@/feature/auth/entities/auth-entities";
 
 export default function FormulaireDemandeSimple() {
   const today = new Date().toISOString().split("T")[0];
@@ -11,7 +12,7 @@ export default function FormulaireDemandeSimple() {
   const [priorite, setPriorite] = useState("Normale");
   const [date, setDate] = useState(today);
   const [description, setDescription] = useState("");
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [pending, setPending] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); 
 

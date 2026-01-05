@@ -50,9 +50,10 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
-  const demandesEnAttente = demandes.filter(
-    (d: any) => d.statutDemande === "En attente"
-  ).length;
+ const demandesEnAttente = demandes.filter(
+   (d: { statutDemande: string }) => d.statutDemande === "En attente"
+ ).length;
+
 
   const nombreDepartements = departements.length;
   const nombreSpecialites = specialites.length;

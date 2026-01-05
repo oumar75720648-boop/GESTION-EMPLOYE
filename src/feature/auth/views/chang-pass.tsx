@@ -54,11 +54,8 @@ export function ChangePassword({ userId }: ChangePasswordProps) {
       setNewPassword("");
       setConfirmPassword("");
       router.replace("/auth");
-    } catch (err: any) {
-      setError(
-        err?.message ||
-          "Une erreur est survenue lors du changement de mot de passe."
-      );
+    } catch {
+      setError("Une erreur est survenue lors du changement de mot de passe.");
     } finally {
       setPending(false);
     }
@@ -71,7 +68,6 @@ export function ChangePassword({ userId }: ChangePasswordProps) {
       </h2>
 
       <div className="flex flex-col gap-4 mb-4">
-        {/* Mot de passe actuel */}
         <div className="relative">
           <input
             type={showOld ? "text" : "password"}

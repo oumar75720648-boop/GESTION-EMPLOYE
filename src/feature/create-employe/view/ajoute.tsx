@@ -12,11 +12,10 @@ import { Eye, EyeOff } from "lucide-react";
 export default function AjouterEmploye() {
   const { departements } = useDepartements();
   const { specialites } = useSpecialites();
-  const { action, pending, error } = useEmploye();
+  const { action, pending } = useEmploye(); // plus error
   const [visible, setVisible] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");  
+  const [successMessage, setSuccessMessage] = useState("");
 
-  ///poser le form
   const { register, handleSubmit, reset } = useForm<EmployeFormData>({
     defaultValues: {
       nom: "",
@@ -28,16 +27,15 @@ export default function AjouterEmploye() {
       specialiteId: null,
       typeUtilisateurId: null,
     },
-  });  
-   
-  //validation 
-  const onSubmit = async (data: EmployeFormData) => { 
-    const result = await action(data);   
+  });
+
+  const onSubmit = async (data: EmployeFormData) => {
+    const result = await action(data);
     if (result) {
-      setSuccessMessage("Utilisateur créé avec succès !"); 
+      setSuccessMessage("Utilisateur créé avec succès !");
       reset();
     } else {
-      setSuccessMessage(""); 
+      setSuccessMessage("");
     }
   };
 
@@ -47,10 +45,6 @@ export default function AjouterEmploye() {
         Créer un Employé
       </h1>
 
-      {error && (
-        <div className="mb-4 p-3 text-red-700 bg-red-100 rounded">{error}</div>
-      )}
-
       {successMessage && (
         <div className="mb-4 p-3 text-green-700 bg-green-100 rounded">
           {successMessage}
@@ -58,7 +52,7 @@ export default function AjouterEmploye() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
+        {/* Nom & Prénom */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <label className="block mb-1 font-medium">Nom</label>
@@ -125,6 +119,7 @@ export default function AjouterEmploye() {
           </button>
         </div>
 
+        {/* Département */}
         <div>
           <label className="block mb-1 font-medium">Département</label>
           <select
@@ -141,6 +136,7 @@ export default function AjouterEmploye() {
           </select>
         </div>
 
+        {/* Spécialité */}
         <div>
           <label className="block mb-1 font-medium">Spécialité</label>
           <select
@@ -157,6 +153,7 @@ export default function AjouterEmploye() {
           </select>
         </div>
 
+        {/* Type Utilisateur */}
         <div>
           <label className="block mb-1 font-medium">Type Utilisateur</label>
           <select

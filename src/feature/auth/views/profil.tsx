@@ -77,9 +77,6 @@ export default function UserProfile() {
           Modifier le profil
         </Button>
 
-        <Button onClick={() => router.push("")} variant="outline">
-          Retour au tableau de bord
-        </Button>
       </div>
     </div>
   );

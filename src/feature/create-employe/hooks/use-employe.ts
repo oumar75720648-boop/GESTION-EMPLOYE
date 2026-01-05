@@ -3,9 +3,8 @@ import { employeService } from "../service/create";
 import { EmployeFormData } from "../entites/employe-end";
 
 export const useEmploye = () => {
-  const [employes, setEmployes] = useState<any[]>([]);
+  const [employes, setEmployes] = useState<EmployeFormData[]>([]);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -17,7 +16,7 @@ export const useEmploye = () => {
         }));
         setEmployes(initialized);
       } catch (err) {
-        console.error(err);
+        // rien ici
       }
     };
     fetch();
@@ -25,15 +24,10 @@ export const useEmploye = () => {
 
   const action = async (data: EmployeFormData) => {
     setPending(true);
-    setError(null);
     try {
-      const nouveau = await employeService.createEmploye(data);
-      setEmployes((prev) => [...prev, nouveau]);
-      return nouveau;
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Erreur lors de la création");
-      throw err;
+      const response = await employeService.createEmploye(data);
+      setEmployes((prev) => [...prev, response.data]);
+      return response.data;
     } finally {
       setPending(false);
     }
@@ -51,12 +45,10 @@ export const useEmploye = () => {
       );
 
       return updated;
-    } catch (err) {
-      console.error(err);
     } finally {
       setPending(false);
     }
   };
 
-  return { employes, toggleActif, action, pending, error };
+  return { employes, toggleActif, action, pending };
 };

@@ -1,6 +1,7 @@
 export interface Utilisateur {
   id: number;
   nom: string;
+  email : string ,
   prenom: string;
   contact: string;
   role: string | null;
@@ -18,8 +19,9 @@ export interface DemandePayload {
     id: number;
     nom: string;
     prenom: string;
+    email : string ;
     contact: string;
     role: string | null;
   };
-  motifRefus?: string; 
+  motifRefus?: string;
 }

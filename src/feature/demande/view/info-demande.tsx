@@ -7,20 +7,23 @@ import {
   accepterDemande,
   refuserDemande,
 } from "@/feature/message/service/message-ser";
+import { DemandePayload } from "../entities/demande-entites"; // ton type
 
 export default function InfoDemandePage() {
   const id = Number(useSearchParams().get("idDemande"));
   const router = useRouter();
 
-  const [demande, setDemande] = useState<any>(null);
+  const [demande, setDemande] = useState<DemandePayload | null>(null);
   const [showMotif, setShowMotif] = useState(false);
   const [motif, setMotif] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetchDemandes().then((all) => {
-      setDemande(all.find((d: any) => d.idDemande === id) || null);
-    });
+    const loadDemande = async () => {
+      const all = await fetchDemandes();
+      setDemande(all.find((d: DemandePayload) => d.idDemande === id) || null);
+    };
+    loadDemande();
   }, [id]);
 
   const accepter = async () => {
@@ -45,13 +48,13 @@ export default function InfoDemandePage() {
       <h1 className="text-2xl font-bold mb-4">Détails de la demande</h1>
 
       <p>
-        <strong>Nom :</strong> {demande.utilisateur?.nom || "-"}
+        <strong>Nom :</strong> {demande.utilisateur.nom || "-"}
       </p>
       <p>
-        <strong>Prénom :</strong> {demande.utilisateur?.prenom || "-"}
+        <strong>Prénom :</strong> {demande.utilisateur.prenom || "-"}
       </p>
       <p>
-        <strong>Email :</strong> {demande.utilisateur?.email || "-"}
+        <strong>Email :</strong> {demande.utilisateur.email || "-"}
       </p>
       <p>
         <strong>Type :</strong> {demande.typeDemande}

@@ -3,25 +3,19 @@
 import { useState, useEffect } from "react";
 import { fetchDemandes } from "@/feature/demande/service/demande-service";
 import { useRouter } from "next/navigation";
+import { DemandePayload } from "../entities/demande-entites"; 
 
 export default function DemandesList() {
-  const [demandes, setDemandes] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [demandes, setDemandes] = useState<DemandePayload[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    loadDemandes();
-  }, []);
-
-  const loadDemandes = async () => {
-    setLoading(true);
-    try {
+    const loadDemandes = async () => {
       const data = await fetchDemandes();
       setDemandes(data);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    loadDemandes();
+  }, []);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">

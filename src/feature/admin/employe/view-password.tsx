@@ -11,13 +11,9 @@ import {
 import { AfterConnect } from "@/feature/auth/entities/auth-entities";
 
 export function ChangePass() {
-  const today = new Date().toISOString().split("T")[0];
-
-  const [date, setDate] = useState(today);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -33,15 +29,9 @@ export function ChangePass() {
   const handleChangePassword = async () => {
     if (!user) return;
 
-    setError("");
     setMessage("");
 
-    if (newPassword !== confirmPassword) {
-      setError(
-        "Le nouveau mot de passe et la confirmation ne correspondent pas."
-      );
-      return;
-    }
+    if (newPassword !== confirmPassword) return; 
 
     setPending(true);
     try {
@@ -55,7 +45,6 @@ export function ChangePass() {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (err: unknown) {
     } finally {
       setPending(false);
     }
@@ -68,7 +57,6 @@ export function ChangePass() {
       </h2>
 
       <div className="flex flex-col gap-4 mb-4">
-        {/* Mot de passe actuel */}
         <div className="relative">
           <input
             type={showOld ? "text" : "password"}
@@ -86,7 +74,6 @@ export function ChangePass() {
           </button>
         </div>
 
-        {/* Nouveau mot de passe */}
         <div className="relative">
           <input
             type={showNew ? "text" : "password"}
@@ -104,7 +91,6 @@ export function ChangePass() {
           </button>
         </div>
 
-        {/* Confirmer nouveau mot de passe */}
         <div className="relative">
           <input
             type={showConfirm ? "text" : "password"}
@@ -123,7 +109,6 @@ export function ChangePass() {
         </div>
       </div>
 
-      {error && <p className="text-red-600 mb-2">{error}</p>}
       {message && <p className="text-green-600 mb-2">{message}</p>}
 
       <Button
